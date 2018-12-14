@@ -5,6 +5,10 @@ stock-container {
   padding: 10px;
 }
 
-.stock-container .name h3, .stock-container .name h4 {
-  display: inlike-block;
+.positive {
+  color: green;
+}
+
+.negative {
+  color: red;
 }
