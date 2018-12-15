@@ -8,13 +8,6 @@ import { Stock} from '../../model/stock';
 })
 export class StockItemComponent implements OnInit {
 
-  public name: string;
-  public code: string;
-  public price: number;
-  public previousPrice: number;
-  public positiveChange: boolean;
-  public favorite: boolean;
-
   public stock: Stock;
 
   constructor() { }
