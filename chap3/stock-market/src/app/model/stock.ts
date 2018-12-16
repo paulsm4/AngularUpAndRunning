@@ -1,6 +1,6 @@
 export class Stock {
 
-  favorite: boolean = false;
+  favorite = false;
 
   constructor(public name: string,
               public code: string,
