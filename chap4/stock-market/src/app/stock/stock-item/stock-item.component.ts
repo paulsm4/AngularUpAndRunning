@@ -18,7 +18,7 @@ import { Stock } from '../../model/stock';
   `,
   // styleUrls: ['./stock-item.component.css' ]
   styles: [`
-  stock-container {
+  .stock-container {
     border: 1px solid black;
     border-radius: 5px;
     display: inline-block;
