@@ -1,0 +1,38 @@
+-- D:\paul\proj\AngularUpAndRunning\tutorials\chap4\stock-market : D:\paul\proj\AngularUpAndRunning\stock-market.bu -- includes left-only,right-only,differing files
+.\.angular-cli.json                                 only in D:\paul\proj\AngularUpAndRunning\stock-market.bu
+.\.editorconfig	                                    only in D:\paul\proj\AngularUpAndRunning\tutorials\chap4\stock-market
+.\.gitignore	                                    only in D:\paul\proj\AngularUpAndRunning\tutorials\chap4\stock-market
+.\angular.json	                                    only in D:\paul\proj\AngularUpAndRunning\tutorials\chap4\stock-market
+.\karma.conf.js	                                    only in D:\paul\proj\AngularUpAndRunning\stock-market.bu
+.\package-lock.json	                                different (D:\paul\proj\AngularUpAndRunning\tutorials\chap4\stock-market is more recent)
+.\package.json	                                    different (D:\paul\proj\AngularUpAndRunning\tutorials\chap4\stock-market is more recent)
+.\protractor.conf.js                                only in D:\paul\proj\AngularUpAndRunning\stock-market.bu
+.\readme.md	                                        different (D:\paul\proj\AngularUpAndRunning\tutorials\chap4\stock-market is more recent)
+.\tsconfig.json	                                    different (D:\paul\proj\AngularUpAndRunning\tutorials\chap4\stock-market is more recent)
+.\tslint.json	                                    different (D:\paul\proj\AngularUpAndRunning\tutorials\chap4\stock-market is more recent)
+.\e2e\protractor.conf.js                            only in D:\paul\proj\AngularUpAndRunning\tutorials\chap4\stock-market
+.\e2e\tsconfig.e2e.json                             only in D:\paul\proj\AngularUpAndRunning\tutorials\chap4\stock-market
+.\e2e\src\app.e2e-spec.ts                           only in D:\paul\proj\AngularUpAndRunning\tutorials\chap4\stock-market
+.\e2e\src\app.po.ts                                 only in D:\paul\proj\AngularUpAndRunning\tutorials\chap4\stock-market
+.\src\browserslist                                  only in D:\paul\proj\AngularUpAndRunning\tutorials\chap4\stock-market
+.\src\index.html                                    different (D:\paul\proj\AngularUpAndRunning\tutorials\chap4\stock-market is more recent)
+.\src\karma.conf.js                                 only in D:\paul\proj\AngularUpAndRunning\tutorials\chap4\stock-market
+.\src\main.ts                                       different (D:\paul\proj\AngularUpAndRunning\tutorials\chap4\stock-market is more recent)
+.\src\polyfills.ts                                  different (D:\paul\proj\AngularUpAndRunning\tutorials\chap4\stock-market is more recent)
+.\src\styles.css                                    different (D:\paul\proj\AngularUpAndRunning\tutorials\chap4\stock-market is more recent)
+.\src\test.ts                                       different (D:\paul\proj\AngularUpAndRunning\tutorials\chap4\stock-market is more recent)
+.\src\tsconfig.app.json                             different (D:\paul\proj\AngularUpAndRunning\tutorials\chap4\stock-market is more recent)
+.\src\tsconfig.spec.json                            different (D:\paul\proj\AngularUpAndRunning\tutorials\chap4\stock-market is more recent)
+.\src\tslint.json                                   only in D:\paul\proj\AngularUpAndRunning\tutorials\chap4\stock-market
+.\src\typings.d.ts                                  only in D:\paul\proj\AngularUpAndRunning\stock-market.bu
+.\src\app\app.component.css                         different (D:\paul\proj\AngularUpAndRunning\tutorials\chap4\stock-market is more recent)
+.\src\app\app.component.html                        different (D:\paul\proj\AngularUpAndRunning\tutorials\chap4\stock-market is more recent)
+.\src\app\app.component.spec.ts                     only in D:\paul\proj\AngularUpAndRunning\tutorials\chap4\stock-market
+.\src\app\app.component.ts                          different (D:\paul\proj\AngularUpAndRunning\tutorials\chap4\stock-market is more recent)
+.\src\app\app.module.ts                             different (D:\paul\proj\AngularUpAndRunning\tutorials\chap4\stock-market is more recent)
+.\src\app\model\stock.ts                            only in D:\paul\proj\AngularUpAndRunning\stock-market.bu
+.\src\app\stock\stock-item\stock-item.component.css	only in D:\paul\proj\AngularUpAndRunning\stock-market.bu
+.\src\app\stock\stock-item\stock-item.component.ts	only in D:\paul\proj\AngularUpAndRunning\stock-market.bu
+.\src\environments\environment.prod.ts              different (D:\paul\proj\AngularUpAndRunning\tutorials\chap4\stock-market is more recent)
+.\src\environments\environment.ts                   different (D:\paul\proj\AngularUpAndRunning\tutorials\chap4\stock-market is more recent)
+-- 36 files listed
