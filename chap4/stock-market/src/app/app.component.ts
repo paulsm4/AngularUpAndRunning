@@ -1,42 +1,50 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, SimpleChanges, OnInit, OnChanges, OnDestroy,
+         DoCheck, AfterViewChecked, AfterViewInit, AfterContentChecked,
+         AfterContentInit } from '@angular/core';
 import { Stock } from './model/stock';
-
-// import { Component, ViewEncapsulation } from '@angular/core';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
-  // encapsulation: ViewEncapsulation.None
-  // encapsulation: ViewEncapsulation.Native
+  styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnChanges, OnDestroy,
+                                     DoCheck, AfterContentChecked,
+                                     AfterContentInit, AfterViewChecked,
+                                     AfterViewInit {
   title = 'Stock Market App';
 
   public stock: Stock;
-  private counter = 1;
 
-  ngOnInit(): void {
-    console.log('app::ngOnInit():', this);
-    this.stock = new Stock('Test Stock Company', 'TSC', 85, 80);
-  }
-
-  onToggleFavorite(event) {
-    console.log('app::onToggleFavorite():', event);
+  onToggleFavorite(stock: Stock) {
+    console.log('Favorite for stock ', stock, ' was triggered');
     this.stock.favorite = !this.stock.favorite;
   }
 
-  changeStockObject() {
-    // This *WILL* update the component with ChangeDetectionStrategy.OnPush
-    console.log('app::changeStockObject():', this.stock);
-    ++this.counter;
-    this.stock = new Stock('New TSC-' + this.counter++, 'NTSC-' + this.counter++, 85, 80);
+  ngOnInit(): void {
+    this.stock = new Stock('Test Stock Company', 'TSC', 85, 80);
+    console.log('App Component - On Init');
   }
 
-  changeStockPrice() {
-    // This *WILL NOT* update the component, because it's the same reference
-    console.log('app::changeStockPrice():', this.stock);
-    this.stock.price += 10;
+  ngAfterViewInit(): void {
+    console.log('App Component - After View Init');
   }
-
+  ngAfterViewChecked(): void {
+    console.log('App Component - After View Checked');
+  }
+  ngAfterContentInit(): void {
+    console.log('App Component - After Content Init');
+  }
+  ngAfterContentChecked(): void {
+    console.log('App Component - After Content Checked');
+  }
+  ngDoCheck(): void {
+    console.log('App Component - Do Check');
+  }
+  ngOnDestroy(): void {
+    console.log('App Component - On Destroy');
+  }
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log('App Component - On Changes - ', changes);
+  }
 }

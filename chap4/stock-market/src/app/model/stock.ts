@@ -1,5 +1,7 @@
 export class Stock {
+  /* tslint:disable */
   favorite: boolean = false;
+  /* tslint:enable */
 
   constructor(public name: string,
               public code: string,
@@ -7,6 +9,7 @@ export class Stock {
               public previousPrice: number) {}
 
   isPositiveChange(): boolean {
+    console.log('Stock::isPositiveChange:', this);
     return this.price >= this.previousPrice;
   }
 }
