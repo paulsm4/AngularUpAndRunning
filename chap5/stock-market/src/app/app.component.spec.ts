@@ -1,8 +1,8 @@
 import { TestBed, async } from '@angular/core/testing';
 
 import { AppComponent } from './app.component';
-import { StockItemComponent } from 'app/stock/stock-item/stock-item.component';
-import { Stock } from 'app/model/stock';
+import { StockItemComponent } from './stock/stock-item/stock-item.component';
+import { Stock } from './model/stock';
 import { By } from '@angular/platform-browser';
 
 describe('AppComponent', () => {
@@ -66,10 +66,17 @@ describe('AppComponent', () => {
       expect(addToFavoriteBtnEl).toBeDefined();
       addToFavoriteBtnEl.triggerEventHandler('click', null);
 
+      let s = (addToFavoriteBtnEl.nativeElement.textContent).trim();
+      console.log('addToFavoriteBtnEl:', addToFavoriteBtnEl, s);
+      expect(s).toEqual('Click to select Favorite');
+
       fixture.detectChanges();
       expect(component.stock.favorite).toBeTruthy();
       addToFavoriteBtnEl = fixture.debugElement.query(By.css('button'));
-      expect(addToFavoriteBtnEl).toBeNull();
+      s = (addToFavoriteBtnEl.nativeElement.textContent).trim();
+      console.log('addToFavoriteBtnEl:', addToFavoriteBtnEl, s);
+      expect(s).toEqual('Click to unselect Favorite');
+      // expect(addToFavoriteBtnEl).toBeNull();
     });
   });
 

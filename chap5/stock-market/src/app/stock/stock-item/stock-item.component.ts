@@ -17,7 +17,7 @@ export class StockItemComponent {
    }
 
   onToggleFavorite(event) {
-    console.log('StockItemComponent.onToggleFavorite()', stock, ' was triggered');
+    console.log('StockItemComponent.onToggleFavorite()', event);
     this.toggleFavorite.emit(this.stock);
   }
 }
