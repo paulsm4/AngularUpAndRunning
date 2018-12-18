@@ -1,0 +1,29 @@
+[WDS] Disconnected! vendor.js:81175:5
+App Component - On Init app.component.ts:26:4
+App Component - Do Check app.component.ts:42:4
+App Component - After Content Init app.component.ts:36:4
+App Component - After Content Checked app.component.ts:39:4
+
+Stock Item Component - On Changes -  
+stock-item.component.ts:49:4
+Stock Item Component - On Init stock-item.component.ts:28:4
+Stock Item Component - Do Check stock-item.component.ts:43:4
+Stock Item Component - After Content Init stock-item.component.ts:37:4
+Stock Item Component - After Content Checked stock-item.component.ts:40:4
+Stock::isPositiveChange: 
+
+Stock Item Component - After View Init stock-item.component.ts:31:4
+Stock Item Component - After View Checked stock-item.component.ts:34:4
+App Component - After View Init app.component.ts:30:4
+App Component - After View Checked app.component.ts:33:4
+Stock::isPositiveChange: 
+
+App Component - Do Check app.component.ts:42:4
+App Component - After Content Checked app.component.ts:39:4
+Stock Item Component - Do Check stock-item.component.ts:43:4
+Stock Item Component - After Content Checked stock-item.component.ts:40:4
+Stock::isPositiveChange: 
+
+Stock Item Component - After View Checked stock-item.component.ts:34:4
+App Component - After View Checked app.component.ts:33:4
+Stock::isPositiveChange: 

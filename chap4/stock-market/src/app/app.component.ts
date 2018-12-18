@@ -1,6 +1,4 @@
-import { Component, SimpleChanges, OnInit, OnChanges, OnDestroy,
-         DoCheck, AfterViewChecked, AfterViewInit, AfterContentChecked,
-         AfterContentInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Stock } from './model/stock';
 
 @Component({
@@ -8,43 +6,16 @@ import { Stock } from './model/stock';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit, OnChanges, OnDestroy,
-                                     DoCheck, AfterContentChecked,
-                                     AfterContentInit, AfterViewChecked,
-                                     AfterViewInit {
+export class AppComponent implements OnInit {
   title = 'Stock Market App';
 
-  public stock: Stock;
-
-  onToggleFavorite(stock: Stock) {
-    console.log('Favorite for stock ', stock, ' was triggered');
-    this.stock.favorite = !this.stock.favorite;
-  }
+  public stockObj: Stock;
 
   ngOnInit(): void {
-    this.stock = new Stock('Test Stock Company', 'TSC', 85, 80);
-    console.log('App Component - On Init');
+    this.stockObj = new Stock('Test Stock Company', 'TSC', 85, 80);
   }
 
-  ngAfterViewInit(): void {
-    console.log('App Component - After View Init');
-  }
-  ngAfterViewChecked(): void {
-    console.log('App Component - After View Checked');
-  }
-  ngAfterContentInit(): void {
-    console.log('App Component - After Content Init');
-  }
-  ngAfterContentChecked(): void {
-    console.log('App Component - After Content Checked');
-  }
-  ngDoCheck(): void {
-    console.log('App Component - Do Check');
-  }
-  ngOnDestroy(): void {
-    console.log('App Component - On Destroy');
-  }
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log('App Component - On Changes - ', changes);
+  testMethod() {
+    console.log('Test method in AppComponent triggered');
   }
 }
