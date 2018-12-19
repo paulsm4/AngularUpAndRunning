@@ -1,29 +1,62 @@
 <h2>Create Stock Form</h2>
 
 <div class="form-group">
-  <form>
+  <form (ngSubmit)="createStock(stockForm)" #stockForm="ngForm">
     <div class="stock-name">
-    <!-- 1) Hard-coded syntax:
       <input type="text"
-        placeholder="Stock Name"
-        [value]="stock.name";
-        (input)="stock.name=$event.target.value">
-    -->
-    <!-- 2) Expanded syntax: -->
-      <input type="text"
-        placeholder="Stock Name"
-        name="stockName"
-        [ngModel]="stock.name"
-        (ngModelChange)="stock.name=$event">
-    <!-- 3) Collapsed ("banana box") syntax:
-      <input type="text"
-        placeholder="Stock Name"
-        name="stockName"
-        [(ngModel)]="stock.name">
-     -->
+             placeholder="Stock Name"
+             required
+             name="stockName"
+             #stockName="ngModel"
+             [(ngModel)]="stock.name">
     </div>
+    <div *ngIf="stockName.errors && stockName?.errors.required">Stock Name is Mandatory</div>
+    <div class="stock-code">
+      <input type="text"
+             placeholder="Stock Code"
+             required
+             minlength="2"
+             name="stockCode"
+             #stockCode="ngModel"
+             [(ngModel)]="stock.code">
+    </div>
+    <div *ngIf="stockCode.dirty && stockCode.invalid">
+      <!--
+        Funky "stockCode?." syntax - see Angular bug #149:
+        https://github.com/angular/vscode-ng-language-service/issues/149
+      -->
+      <div *ngIf="stockCode?.errors.required">Stock Code is Mandatory</div>
+      <div *ngIf="stockCode?.errors.minlength">Stock Code must be atleast of length 2</div>
+    </div>
+    <div class="stock-price">
+      <input type="number"
+             placeholder="Stock Price"
+             name="stockPrice"
+             required
+             #stockPrice="ngModel"
+             [ngModel]="stock.price"
+             (ngModelChange)="setStockPrice($event)">
+    </div>
+    <div *ngIf="stockPrice.dirty && stockPrice.invalid">
+      <div *ngIf="stockPrice?.errors.required">Stock Price is Mandatory</div>
+    </div>
+    <div class="stock-exchange">
+      <div>
+        <select name="stockExchange" [(ngModel)]="stock.exchange">
+          <option *ngFor="let exchange of exchanges" [ngValue]="exchange">{{exchange}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="stock-confirm">
+      <input type="checkbox"
+             name="stockConfirm"
+             required
+             [(ngModel)]="confirmed">
+      I confirm that the information provided above is accurate!
+    </div>
+    <button type="submit">Create</button>
   </form>
-  <button (click)="stock.name='test'">Reset stock name</button>
 </div>
 
-<h4>Stock Name is {{stock.name}}</h4>
+<h4>Stock Name is {{stock | json}}</h4>
+<h4>Data has been confirmed: {{confirmed}}</h4>

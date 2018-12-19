@@ -15,16 +15,16 @@ describe('AppComponent', () => {
       expect(appComponent.stock).toBeUndefined();
       appComponent.ngOnInit();
       expect(appComponent.stock).toEqual(
-        new Stock('Test Stock Company', 'TSC', 85, 80));
+        new Stock('Test Stock Company', 'TSC', 85, 80, 'NYSE'));
     });
 
     it('should have toggle stock favorite', () => {
       const appComponent = new AppComponent();
       appComponent.ngOnInit();
       expect(appComponent.stock.favorite).toBeFalsy();
-      appComponent.onToggleFavorite(new Stock('Test', 'TEST', 54, 55));
+      appComponent.onToggleFavorite(new Stock('Test', 'TEST', 54, 55, 'OTHER'));
       expect(appComponent.stock.favorite).toBeTruthy();
-      appComponent.onToggleFavorite(new Stock('Test', 'TEST', 54, 55));
+      appComponent.onToggleFavorite(new Stock('Test', 'TEST', 54, 55, 'OTHER'));
       expect(appComponent.stock.favorite).toBeFalsy();
     });
   });
