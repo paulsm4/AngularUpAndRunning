@@ -3,10 +3,24 @@
 <div class="form-group">
   <form>
     <div class="stock-name">
+    <!-- 1) Hard-coded syntax:
       <input type="text"
-             placeholder="Stock Name"
-             name="stockName"
-             [(ngModel)]="stock.name">
+        placeholder="Stock Name"
+        [value]="stock.name";
+        (input)="stock.name=$event.target.value">
+    -->
+    <!-- 2) Expanded syntax: -->
+      <input type="text"
+        placeholder="Stock Name"
+        name="stockName"
+        [ngModel]="stock.name"
+        (ngModelChange)="stock.name=$event">
+    <!-- 3) Collapsed ("banana box") syntax:
+      <input type="text"
+        placeholder="Stock Name"
+        name="stockName"
+        [(ngModel)]="stock.name">
+     -->
     </div>
   </form>
   <button (click)="stock.name='test'">Reset stock name</button>

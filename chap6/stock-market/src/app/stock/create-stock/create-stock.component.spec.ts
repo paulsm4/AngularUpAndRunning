@@ -7,6 +7,7 @@ describe('CreateStockComponent', () => {
   let fixture: ComponentFixture<CreateStockComponent>;
 
   beforeEach(async(() => {
+    console.log('create-stock.component.spec@beforeEach(async):', this);
     TestBed.configureTestingModule({
       imports: [ FormsModule ],
       declarations: [ CreateStockComponent ]
@@ -15,12 +16,14 @@ describe('CreateStockComponent', () => {
   }));
 
   beforeEach(() => {
+    console.log('create-stock.component.spec@beforeEach():', this);
     fixture = TestBed.createComponent(CreateStockComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
   it('should create', () => {
+    console.log('create-stock.component.spec@it::should be truthy...', component);
     expect(component).toBeTruthy();
   });
 });
