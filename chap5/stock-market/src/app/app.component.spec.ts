@@ -66,10 +66,12 @@ describe('AppComponent', () => {
       expect(addToFavoriteBtnEl).toBeDefined();
       addToFavoriteBtnEl.triggerEventHandler('click', null);
 
+      // Note importance of "trim()" to remove extraneous whitespace from HTML
       let s = (addToFavoriteBtnEl.nativeElement.textContent).trim();
       console.log('addToFavoriteBtnEl:', addToFavoriteBtnEl, s);
       expect(s).toEqual('Click to select Favorite');
 
+      // We won't detect the "click" before this
       fixture.detectChanges();
       expect(component.stock.favorite).toBeTruthy();
       addToFavoriteBtnEl = fixture.debugElement.query(By.css('button'));

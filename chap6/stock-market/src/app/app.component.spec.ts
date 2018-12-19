@@ -2,8 +2,10 @@ import { TestBed, async } from '@angular/core/testing';
 
 import { AppComponent } from './app.component';
 import { StockItemComponent } from './stock/stock-item/stock-item.component';
+import { CreateStockComponent } from './stock/create-stock/create-stock.component';
 import { Stock } from './model/stock';
 import { By } from '@angular/platform-browser';
+import { FormsModule } from '@angular/forms';
 
 describe('AppComponent', () => {
 
@@ -33,9 +35,11 @@ describe('AppComponent', () => {
 
     beforeEach(async(() => {
       TestBed.configureTestingModule({
+        imports: [ FormsModule ],
         declarations: [
           AppComponent,
           StockItemComponent,
+          CreateStockComponent
         ],
       }).compileComponents();
     }));
