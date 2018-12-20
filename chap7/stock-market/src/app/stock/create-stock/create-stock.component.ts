@@ -1,5 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { Stock } from 'src/app/model/stock';
+
+/* Note:
+   "counter" is external to "@Component" decorator and "CreateStockComponent" export */
+let counter = 1;
 
 @Component({
   selector: 'app-create-stock',
@@ -17,9 +22,11 @@ export class CreateStockComponent {
    */
 
   /*  Substitute FormBuilder for FormControl */
+  private stock;
   public stockForm: FormGroup;
   constructor(private fb: FormBuilder) {
     this.createForm();
+    this.stock = new Stock('Test ' + counter++, 'TST', 20, 10);
   }
 
   createForm() {
@@ -34,7 +41,26 @@ export class CreateStockComponent {
   get price() { return this.stockForm.get('price'); }
   get code() { return this.stockForm.get('code'); }
 
+  loadStockFromServer() {
+    console.log('CreateStockComponent.loadStockFromServer', this.stock);
+    this.stock = new Stock('Test2 ' + counter++, 'TST2', 20, 10);
+    const stockFormModel = Object.assign({}, this.stock);
+    delete stockFormModel.previousPrice;
+    delete stockFormModel.favorite;
+    this.stockForm.setValue(stockFormModel);
+  }
+  patchStockForm() {
+    console.log('CreateStockComponent.patchStockForm', this.stock);
+    this.stock = new Stock('Test3 ' + counter++, 'TST3', 20, 10);
+    this.stockForm.patchValue(this.stock);
+  }
+  resetForm() {
+    console.log('CreateStockComponent.resetForm', this.stock);
+    this.stockForm.reset();
+  }
+
   onSubmit() {
-    console.log('CreateStockComponent.onSubmit()', this.stockForm.value);
+    console.log('CreateStockComponent.onSubmit(): Saving stock', this.stockForm.value);
+    this.stock = Object.assign({}, this.stockForm.value);
   }
 }
