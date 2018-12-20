@@ -30,6 +30,10 @@ export class CreateStockComponent {
     });
   }
 
+  get name() { return this.stockForm.get('name'); }
+  get price() { return this.stockForm.get('price'); }
+  get code() { return this.stockForm.get('code'); }
+
   onSubmit() {
     console.log('CreateStockComponent.onSubmit()', this.stockForm.value);
   }

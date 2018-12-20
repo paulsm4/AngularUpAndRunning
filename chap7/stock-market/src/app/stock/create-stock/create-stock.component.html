@@ -8,17 +8,39 @@
         name="stockName"
         formControlName="name">
     </div>
+    <div *ngIf="name.invalid && (name.dirty || name.touched)">
+Name is required
+    </div>
+
     <div class="stock-code">
         <input type="text"
           placeholder="Stock Code"
           formControlName="code">
+      </div>
+      <div *ngIf="code.invalid && (code.dirty || code.touched)">
+        <div *ngIf="!!code.errors.required">
+          Stock Code is required
         </div>
+        <div *ngIf="!!code.errors.minlength">
+          Stock Code must be atleast 2 characters
+        </div>
+      </div>
+
       <div class="stock-price">
           <input type="text"
             placeholder="Stock Price"
             formControlName="price">
-          </div>
-          <button type="submit">Submit</button>
+      </div>
+      <div *ngIf="name.invalid && (price.dirty || price.touched)">
+        <div *ngIf="!!price.errors.required">
+          Stock Price is required
+        </div>
+        <div *ngIf="!!price.errors.min">
+          Stock price must be positive
+        </div>
+      </div>
+
+      <button type="submit">Submit</button>
   </form>
 </div>
 
