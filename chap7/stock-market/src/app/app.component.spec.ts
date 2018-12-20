@@ -5,7 +5,7 @@ import { StockItemComponent } from './stock/stock-item/stock-item.component';
 import { CreateStockComponent } from './stock/create-stock/create-stock.component';
 import { Stock } from './model/stock';
 import { By } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 
 describe('AppComponent', () => {
 
@@ -35,7 +35,7 @@ describe('AppComponent', () => {
 
     beforeEach(async(() => {
       TestBed.configureTestingModule({
-        imports: [ FormsModule ],
+        imports: [ ReactiveFormsModule ],
         declarations: [
           AppComponent,
           StockItemComponent,

@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { CreateStockComponent } from './create-stock.component';
 
 describe('CreateStockComponent', () => {
@@ -9,7 +9,7 @@ describe('CreateStockComponent', () => {
   beforeEach(async(() => {
     console.log('create-stock.component.spec@beforeEach(async):', this);
     TestBed.configureTestingModule({
-      imports: [ FormsModule ],
+      imports: [ReactiveFormsModule],
       declarations: [ CreateStockComponent ]
     })
     .compileComponents();
