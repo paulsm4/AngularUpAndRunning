@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Stock } from 'app/model/stock';
+import { Stock } from '../model/stock';
 
 @Injectable()
 export class StockService {
