@@ -1,10 +1,19 @@
 import { Injectable } from '@angular/core';
 import { Stock } from '../model/stock';
 
+/* // For lower than RxJS6:
+import { Observable } from 'rxjs/Observable';
+import { _throw as ObservableThrow } from 'rxjs/observable/throw';
+import { of as ObservableOf } from 'rxjs/observable/of';
+ */
+// For RxJS6 and higher:
+import { Observable, throwError, of as ObservableOf } from 'rxjs';
+
 @Injectable()
 export class StockService {
 
   private stocks: Stock[];
+
   constructor() {
     this.stocks = [
       new Stock('Test Stock Company', 'TSC', 85, 80, 'NASDAQ'),
@@ -13,21 +22,30 @@ export class StockService {
     ];
    }
 
-  getStocks() : Stock[] {
-    return this.stocks;
+  getStocks(): Observable<Stock[]> {
+    return ObservableOf(this.stocks);
   }
 
   createStock(stock: Stock) {
-    let foundStock = this.stocks.find(each => each.code === stock.code);
+    const foundStock = this.stocks.find(
+      each => each.code === stock.code
+    );
     if (foundStock) {
-      return false;
+      return throwError({
+        msg: 'Stock with code ' + stock.code + ' already exists'
+      });
     }
     this.stocks.push(stock);
-    return true;
+    return ObservableOf({
+      msg: 'Stock with code ' + stock.code + ' successfully created'
+    });
   }
 
-  toggleFavorite(stock: Stock) {
-    let foundStock = this.stocks.find(each => each.code === stock.code);
+  toggleFavorite(stock: Stock): Observable<Stock> {
+    const foundStock = this.stocks.find(
+      each => each.code === stock.code
+    );
     foundStock.favorite = !foundStock.favorite;
+    return ObservableOf(foundStock);
   }
 }
