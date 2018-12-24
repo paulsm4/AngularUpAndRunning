@@ -1,0 +1,18 @@
+-- D:\paul\proj\AngularUpAndRunning\tutorials\chap9\stock-market\src : D:\paul\proj\AngularUpAndRunning\chap9.bu\stock-market\src -- includes differing files
+.\polyfills.ts	different (D:\paul\proj\AngularUpAndRunning\chap9.bu\stock-market\src is more recent)
+.\test.ts	different (D:\paul\proj\AngularUpAndRunning\chap9.bu\stock-market\src is more recent)
+.\tsconfig.app.json	different (D:\paul\proj\AngularUpAndRunning\chap9.bu\stock-market\src is more recent)
+.\tsconfig.spec.json	different (D:\paul\proj\AngularUpAndRunning\chap9.bu\stock-market\src is more recent)
+.\app\app.component.html	different (D:\paul\proj\AngularUpAndRunning\chap9.bu\stock-market\src is more recent)
+.\app\app.component.spec.ts	different (D:\paul\proj\AngularUpAndRunning\chap9.bu\stock-market\src is more recent)
+.\app\app.component.ts	different (D:\paul\proj\AngularUpAndRunning\tutorials\chap9\stock-market\src is more recent)
+.\app\app.module.ts	different (D:\paul\proj\AngularUpAndRunning\chap9.bu\stock-market\src is more recent)
+.\app\services\stock.service.ts	different (D:\paul\proj\AngularUpAndRunning\tutorials\chap9\stock-market\src is more recent)
+.\app\stock\create-stock\create-stock.component.css	different (D:\paul\proj\AngularUpAndRunning\chap9.bu\stock-market\src is more recent)
+.\app\stock\create-stock\create-stock.component.html	different (D:\paul\proj\AngularUpAndRunning\chap9.bu\stock-market\src is more recent)
+.\app\stock\create-stock\create-stock.component.ts	different (D:\paul\proj\AngularUpAndRunning\tutorials\chap9\stock-market\src is more recent)
+.\app\stock\stock-item\stock-item.component.html	different (D:\paul\proj\AngularUpAndRunning\chap9.bu\stock-market\src is more recent)
+.\app\stock\stock-item\stock-item.component.ts	different (D:\paul\proj\AngularUpAndRunning\tutorials\chap9\stock-market\src is more recent)
+.\app\stock\stock-list\stock-list.component.html	different (D:\paul\proj\AngularUpAndRunning\chap9.bu\stock-market\src is more recent)
+.\app\stock\stock-list\stock-list.component.ts	different (D:\paul\proj\AngularUpAndRunning\tutorials\chap9\stock-market\src is more recent)
+-- 16 files listed
