@@ -1,5 +1,15 @@
 Chap9: simple http
 
+* USAGE:
+  - run1.bat (Mock server):
+     "npm install" (1st time only)
+     "node index.js" (run NodeExpress in DEBUG mode)
+
+  - run2.bat (Angular app):
+     "npm install" (1st time only)
+     "ng serve --proxy-config proxy.conf.json" (use NodeExpress mock server as proxy)
+     <= Proxy needed for JS "Same-Origin Policy"
+  
 * Test 1: Manually updated Copied
 <= No-go: hung at "Loading...".  
    Nothing displayed; no errors/no warnings

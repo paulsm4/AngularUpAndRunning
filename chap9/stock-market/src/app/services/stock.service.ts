@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
 
@@ -14,7 +14,17 @@ export class StockService {
 
   getStocks(): Observable<Stock[]> {
     console.log('StockService::getStocks()');
-    return this.http.get<Stock[]>('/api/stock');
+    return this.http.get<Stock[]>('/api/stock', {
+      // Two options for setting HTTP headers: 1) new HttpHeaders object*, or JS object
+      headers: new HttpHeaders()
+        .set('Authorization', 'MyAuthorizationHeaderValue')
+        .set('X-EXAMPLE-HEADER', 'TestExampleHeaderValue'),
+      // Two options for setting query parameters: 1) new HttpParams object, or JS object*
+      params: {
+        q: 'test',
+        test: 'value'
+      }
+    });
   }
 
   createStock(stock: Stock): Observable<any> {
