@@ -1,0 +1,10 @@
+import { Injectable } from '@angular/core';
+
+@Injectable()
+export class AuthService {
+  public authToken: string;
+
+  constructor() {
+    console.log('AuthService::constructor()');
+   }
+}

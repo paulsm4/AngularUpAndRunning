@@ -1,6 +1,5 @@
 @rem Execute Angular app
-@rem NOTE: Run from "stock-market" root folder
-@cd stock-market
+@rem EXAMPLE USAGE (from "stock-market" root folder): ..\run2
 if not exist node_modules (
 call npm install
 )

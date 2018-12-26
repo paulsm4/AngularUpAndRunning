@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { StockService } from '../../services/stock.service';
-import { Stock } from '../../model/stock';
 import { Observable } from 'rxjs';
+import { StockService } from '../../services/stock.service';
+import { AuthService } from '../../services/auth.service';
+import { Stock } from '../../model/stock';
 
 @Component({
   selector: 'app-stock-list',
@@ -11,32 +12,38 @@ import { Observable } from 'rxjs';
 export class StockListComponent implements OnInit {
 
   public stocks$: Observable<Stock[]>;
-  constructor(private stockService: StockService) {
-    console.log('StockListComponent::constructor()', this.stockService);
-   }
+
+  constructor(
+    private stockService: StockService,
+    private authService: AuthService
+  ) {
+    console.log('StockListComponent::constructor()');
+  }
 
   ngOnInit() {
     console.log('StockListComponent::ngOnInit()');
+    this.fetchStocks();
+  }
+
+  fetchStocks() {
+    console.log('StockListComponent::fetchStocks()');
     this.stocks$ = this.stockService.getStocks();
+  }
 
-    this.stockService.getStocksAsResponse()
-      .subscribe((response) => {
-      console.log('OBSERVE "response" RESPONSE is ', response);
-    });
+  setAuthToken() {
+    console.log('StockListComponent::setAuthToken()', this.authService.authToken);
+    this.authService.authToken = 'TESTING';
+  }
 
-    this.stockService.getStocksAsEvents()
-      .subscribe((response) => {
-      console.log('OBSERVE "events" RESPONSE is ', response);
-    });
+  resetAuthToken() {
+    console.log('StockListComponent::resetAuthToken()', this.authService.authToken);
+    this.authService.authToken = null;
+  }
 
-    this.stockService.getStocksAsString()
-      .subscribe((response) => {
-      console.log('Response Type "text" RESPONSE is ', response);
-    });
-
-    this.stockService.getStocksAsBlob()
-      .subscribe((response) => {
-      console.log('Response Type "blob" RESPONSE is ', response);
-    });
+  makeFailingCall() {
+    console.log('StockListComponent::makeFailingCall()', this.authService.authToken);
+    this.stockService.makeFailingCall().subscribe(
+      (res) => console.log('StockListComponent: Successfully made failing call', res),
+      (err) => console.error('StockListComponent: Error making failing call', err));
   }
 }
