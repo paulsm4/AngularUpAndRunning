@@ -235,14 +235,20 @@ app.get('/api/fail', (req, res) =>
   res.status(403).json({msg: 'You are not allowed to access this'}));
   <= OK, returns a JSON message and HTTP 403...
 
-    - Google console log:
+    - Google console log (NG EXCEPTION):
 zone.js:2969 GET http://localhost:4200/api/fail/ 403 (Forbidden)
   <= Whatever "Zone" is, it got the intended result from server...
 <<Much Angular/RxJS internals stuff>>
 stock-list.component.ts:47 StockListComponent: Error making failing call TypeError: source.lift is not a function
   <= RxJS6-related error...
 
-    - Refactored stock-app.interceptor.ts for RxJS6 conformance:
+    - Breaking changes in rxjs 6.x:
+ https://stackoverflow.com/questions/50209119/property-do-does-not-exist-on-type-observableiproduct
+ https://stackoverflow.com/questions/48089608/angular-5-interceptor-typeerror-next-handle-do-is-not-a-function
+ https://blog.angular-university.io/rxjs-error-handling/
+ https://www.academind.com/learn/javascript/rxjs-6-what-changed/
+
+  5.  Refactored stock-app.interceptor.ts for RxJS6 conformance:
 ...
 /*
   OLD:
@@ -271,4 +277,20 @@ export class StockAppInterceptor implements HttpInterceptor {
       )
     );
   }
+  <= All functionality OK at this point...
 
+===================================================================================================
+
+* Test5: Advanced Observables:
+  - Split last branch into separate directory: stock-market-interceptor
+    <= made backup of RxJS6-compatible lesson part
+
+  - Copied GitHub::simple-html/* => stock-market
+    <= We'll use this as the baseline for the remainder of Chap9
+
+  - cd chap9/stock-market
+    npm install --save rxjs-compat
+    <= RxJS --6.x compatibility mode
+
+    <<All the "deprecated" syntax (including stuff like "import { Stock } from 'app/model/stock'") now works...
+    

@@ -3,12 +3,16 @@ import {HttpEvent, HttpInterceptor, HttpResponse} from '@angular/common/http';
 import {HttpHandler, HttpRequest, HttpErrorResponse} from '@angular/common/http';
 
 /*
- * OLD (Breaking changes in rxjs 6.x):
+ * Breaking changes in rxjs 6.x:
+ *   https://stackoverflow.com/questions/50209119/property-do-does-not-exist-on-type-observableiproduct
+ *   https://stackoverflow.com/questions/48089608/angular-5-interceptor-typeerror-next-handle-do-is-not-a-function
+ *   https://blog.angular-university.io/rxjs-error-handling/
+ *   https://www.academind.com/learn/javascript/rxjs-6-what-changed/
+ * OLD :
  * import {Observable} from 'rxjs/Observable';
  * import 'rxjs/add/operator/do';
  */
 import { Observable } from 'rxjs';
-import { of } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 
 import { AuthService } from './auth.service';
