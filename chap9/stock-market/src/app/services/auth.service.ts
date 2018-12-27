@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class AuthService {
-  public authToken: string;
+  public authToken = '';
 
   constructor() {
-    console.log('AuthService::constructor()');
+    console.log('AuthService::constructor()', this.authToken);
    }
 }

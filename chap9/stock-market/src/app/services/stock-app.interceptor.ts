@@ -1,23 +1,16 @@
 import {Injectable} from '@angular/core';
-import {HttpEvent, HttpInterceptor, HttpResponse, HttpHandler, HttpRequest, HttpErrorResponse } from '@angular/common/http';
+import {HttpEvent, HttpInterceptor, HttpResponse} from '@angular/common/http';
+import {HttpHandler, HttpRequest, HttpErrorResponse} from '@angular/common/http';
 
-import {Observable} from 'rxjs';
 /*
- * Breaking changes in rxjs 6.x:
- * OLD:
- *   import 'rxjs/add/operator/do';
- *   ...
- *   return next.handle(req)
- *       .do(event => this.handleResponse(req, event),
- *           error => this.handleError(req, error));
- * NEW:
- *   import { tap, catchError } from 'rxjs/operators';
- *   import { of } from 'rxjs';*
- *   ...
- *
+ * OLD (Breaking changes in rxjs 6.x):
+ * import {Observable} from 'rxjs/Observable';
+ * import 'rxjs/add/operator/do';
  */
-import { tap, catchError } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import { of } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';
+
 import { AuthService } from './auth.service';
 
 @Injectable()
@@ -36,13 +29,18 @@ export class StockAppInterceptor implements HttpInterceptor {
       console.log('Making an authorized request');
       req = authReq;
     }
-      return next.handle(req)
-      .pipe(
-        tap(
-          event => this.handleResponse(req, event),
-          catchError(error => of(this.handleError(req, error)))
-        )
-      );
+    /*
+     * OLD:
+     * return next.handle(req)
+     *   .do(event => this.handleResponse(req, event),
+     *      error => this.handleError(req, error));
+     */
+    return next.handle(req).pipe(
+      tap(
+        event => this.handleResponse(req, event),
+        error => this.handleError(req, error)
+      )
+    );
   }
 
 

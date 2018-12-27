@@ -25,7 +25,11 @@ import { StockAppInterceptor } from './services/stock-app.interceptor';
   ],
   providers: [
     StockService,
-    AuthService
+    AuthService, {
+      provide: HTTP_INTERCEPTORS,  // How we are providing
+      useClass: StockAppInterceptor,
+      multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })

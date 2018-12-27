@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Stock } from '../model/stock';
-import {AppSettings} from '../AppSettings';
+import { AppSettings } from '../AppSettings';
 
 @Injectable()
 export class StockService {

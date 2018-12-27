@@ -9,13 +9,13 @@ Chap9: simple http
      "npm install" (1st time only)
      "ng serve --proxy-config proxy.conf.json" (use NodeExpress mock server as proxy)
      <= Proxy needed for JS "Same-Origin Policy"
-  
+
 * Test 1: Manually updated Copied
-<= No-go: hung at "Loading...".  
+<= No-go: hung at "Loading...".
    Nothing displayed; no errors/no warnings
 ===================================================================================================
 
-* Test 2:   
+* Test 2:
   - Copied from "simple-http" example,
   - Fixed compile errors (e.g. "import ... 'app/xyz'" => "import ... '../../services/xyz'"
   - Added console.log() trace logging to each method:
@@ -28,7 +28,7 @@ Example app listening on port 3000!
   express:router bodyParser  : /api/stock +0ms
   express:router trim prefix (/api/stock) from url /api/stock +0ms
   express:router router /api/stock : /api/stock +0ms
-  express:router dispatching GET / +0ms    
+  express:router dispatching GET / +0ms
 
     - ng serve index.js (PROXY "/api" { target: http://localhost:3000", ...})  =>
 StockService::constructor()               stock.service.ts:12:4
@@ -59,29 +59,29 @@ OBSERVE "events" RESPONSE is              stock-list.component.ts:29:6
 StockService::getStocksAsString()         stock.service.ts:62:4
 StockService::getStocksAsBlob()           stock.service.ts:69:4
 Angular is running in the development mode. Call enableProdMode() to enable the production mode. core.js:15702
-OBSERVE "response" RESPONSE is  
+OBSERVE "response" RESPONSE is
   Object { headers: {…}, status: 200, statusText: "OK", url: "http://localhost:4200/api/stock", ok: true, type: 4, body: (3) […] }
   stock-list.component.ts:24:6
   <= Response of getStocksAsResponse()
-OBSERVE "events" RESPONSE is  
+OBSERVE "events" RESPONSE is
   Object { headers: {…}, status: 200, statusText: "OK", url: "http://localhost:4200/api/stock", ok: true, type: 4, body: (3) […] }
   stock-list.component.ts:29:6
   <= Response of getStocksAsEvents()
 Response Type "text" RESPONSE is  [{"name":"Test Stock Company","code":"TSC","price":85,"previousPrice":80,"exchange":"NASDAQ","favorite":false},{"name":"Second Stock Company","code":"SSC","price":10,"previousPrice":20,"exchange":"NSE","favorite":false},{"name":"Last Stock Company","code":"LSC","price":876,"previousPrice":765,"exchange":"NYSE","favorite":false}] stock-list.component.ts:34:6
-  Stock::constructor() 
+  Stock::constructor()
   Object { http: {…} }
   stock-item.component.ts:16:4
   <= Response of getStocksAsStringb()
-Response Type "blob" RESPONSE is  
+Response Type "blob" RESPONSE is
   Blob { size: 330, type: "application/json" }
   stock-list.component.ts:39:6
   <= Response of getStocksAsBlob()
 
 * Create new stock:
-CreateStockComponent::createStock() 
+CreateStockComponent::createStock()
   Object { submitted: true, _directives: (5) […], ngSubmit: {…}, form: {…} }
   create-stock.component.ts:39:4
-StockService::createStock() 
+StockService::createStock()
   Object { name: "AAA", code: "BBB", price: 100, previousPrice: 100, exchange: "NASDAQ", favorite: false }
   stock.service.ts:35:4
 
@@ -140,7 +140,7 @@ StockService::createStock()
 
   - Response Type "text" RESPONSE is  [{"name":"Test Stock Company","code":"TSC","price":85,"previousPrice":80,"exchange":"NASDAQ","favorite":false},{"name":"Second Stock Company","code":"SSC","price":10,"previousPrice":20,"exchange":"NSE","favorite":false},{"name":"Last Stock Company","code":"LSC","price":876,"previousPrice":765,"exchange":"NYSE","favorite":false},{"name":"AAA","code":"BBB","price":100,"previousPrice":100,"exchange":"NASDAQ","favorite":false}]
 
-  - Response Type "blob" RESPONSE is  
+  - Response Type "blob" RESPONSE is
    Blob
 ​     size: 427
 ​     type: "application/json"
@@ -153,13 +153,122 @@ StockService::createStock()
 ===================================================================================================
 
 * Test4: Interceptors
+  1. Initial display:
+     ---------------
+StockService::constructor() HttpClient {handler: HttpInterceptingHandler}   stock.service.ts:11
+AuthService::constructor()                                                  auth.service.ts:8
+StockListComponent::constructor()                                           stock-list.component.ts:20
+CreateStockComponent::constructor() StockService {http: HttpClient}         create-stock.component.ts:17
+AppComponent::ngonInit() AppComponent {title: "Stock Market App"}           app.component.ts:12
+StockListComponent::ngOnInit()                                              stock-list.component.ts:24
+StockListComponent::fetchStocks()                                           stock-list.component.ts:29
+StockService::getStocks()                                                   stock.service.ts:15
+StockAppInterceptor::intercept                                              stock-app.interceptor.ts:36
+  req: HttpRequest {
+    url: "/api/stock/",
+    body: null,
+    reportProgress: false,
+    withCredentials: false,
+    responseType: "json", …}
+  next: HttpXhrBackend {xhrFactory: BrowserXhr}
+  authService: AuthService {authToken: ""}
+StockAppInterceptor::handleResponse: /api/stock/ {type: 0}                  stock-app.interceptor.ts:58
 
+StockAppInterceptor::handleResponse:                                        stock-app.interceptor.ts:58
+  /api/stock/
+  HttpResponse {
+    headers: HttpHeaders,
+    status: 200,
+    statusText: "OK",
+    url: "http://localhost:4200/api/stock/",
+    ok: true, …}
+Request for  /api/stock/                                                    stock-app.interceptor.ts:60
+  Response Status  200
+  With body  (3) [{…}, {…}, {…}]
+Stock::constructor() StockService {http: HttpClient}                        stock-item.component.ts:16
+Stock::constructor() StockService {http: HttpClient}                        stock-item.component.ts:16
+Stock::constructor() StockService {http: HttpClient}                        stock-item.component.ts:16
 
+  2. [Set auth token] button:
+     ------------------------
+  StockListComponent::setAuthToken()
 
+  3. [Refresh Stocks] button:
+    -------------------------
+StockListComponent::fetchStocks()
+stock.service.ts:15 StockService::getStocks()
+StockAppInterceptor::intercept
+   req: HttpRequest {url: "/api/stock/", body: null, reportProgress: false, withCredentials: false, responseType: "json", …}
+   next: HttpXhrBackend {xhrFactory: BrowserXhr}
+   authService: AuthService {authToken: "TESTING"}
+Making an authorized request
+   <= This clones() the request, and adds the header "Authorization: TESTING"
+StockAppInterceptor::handleResponse: /api/stock/ {type: 0}
+StockAppInterceptor::handleResponse: /api/stock/ HttpResponse {headers: HttpHeaders, status: 200, statusText: "OK", url: "http://localhost:4200/api/stock/", ok: true, …}
+Request for  /api/stock/  Response Status  200  With body  (3) [{…}, {…}, {…}]
+   <= Dev tools [Network] tab verifies that HTTP header "Authorization: TESTING" was sent with the (cloned) request
+Stock::constructor() StockService {http: HttpClient}
+Stock::constructor() StockService {http: HttpClient}
+Stock::constructor() StockService {http: HttpClientS
 
+  NOTE: Browser refresh sets back to original (clears authToken, etc).
 
+  4. [Making failing call] button:
+    -----------------------------
+    - Google console log:
+StockListComponent::makeFailingCall() TESTING
+StockAppInterceptor::intercept req: HttpRequest {url: "/api/fail/", body: null, reportProgress: false, withCredentials: false, responseType: "json", …} next: HttpXhrBackend {xhrFactory: BrowserXhr} authService: AuthService {authToken: "TESTING"}
+Making an authorized request
+StockAppInterceptor::handleResponse: /api/fail/ {type: 0}
+    <= So far, so good.  [Make failing call] button invokes "/api/fail"
 
+    - NodeJS Express log:
+express:router dispatching GET / +0ms
+express:router dispatching GET /api/fail/ +7m
+express:router query  : /api/fail/ +0ms
+express:router expressInit  : /api/fail/ +0ms
+express:router bodyParser  : /api/fail/ +0ms
+    <= Also good...
 
+    - NodeJS Express app:
+app.get('/api/fail', (req, res) =>
+  res.status(403).json({msg: 'You are not allowed to access this'}));
+  <= OK, returns a JSON message and HTTP 403...
 
+    - Google console log:
+zone.js:2969 GET http://localhost:4200/api/fail/ 403 (Forbidden)
+  <= Whatever "Zone" is, it got the intended result from server...
+<<Much Angular/RxJS internals stuff>>
+stock-list.component.ts:47 StockListComponent: Error making failing call TypeError: source.lift is not a function
+  <= RxJS6-related error...
 
+    - Refactored stock-app.interceptor.ts for RxJS6 conformance:
+...
+/*
+  OLD:
+  import {Observable} from 'rxjs/Observable';
+  import 'rxjs/add/operator/do';
+ */
+import { Observable } from 'rxjs';
+import { of } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';
+...
+@Injectable()
+export class StockAppInterceptor implements HttpInterceptor {
+  ...
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    ...
+    /*
+     * OLD:
+     * return next.handle(req)
+     *   .do(event => this.handleResponse(req, event),
+     *      error => this.handleError(req, error));
+     */
+    return next.handle(req).pipe(
+      tap(
+        event => this.handleResponse(req, event),
+        error => this.handleError(req, error)
+      )
+    );
+  }
 
