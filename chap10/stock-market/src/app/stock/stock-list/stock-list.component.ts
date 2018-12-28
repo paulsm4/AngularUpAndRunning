@@ -10,17 +10,13 @@ import { Stock } from '../../model/stock';
 export class StockListComponent implements OnInit {
 
   public stocks: Stock[];
-  constructor(private stockService: StockService) {
-    console.log('StockListComponent::constructor');
-  }
+  constructor(private stockService: StockService) { }
 
   ngOnInit() {
-    console.log('StockListComponent::ngOnInit()');
     this.stocks = this.stockService.getStocks();
   }
 
   onToggleFavorite(stock: Stock) {
-    console.log('StockListComponent::onToggleFavorite()', stock);
     this.stockService.toggleFavorite(stock);
   }
 }

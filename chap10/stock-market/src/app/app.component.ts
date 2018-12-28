@@ -6,9 +6,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  title = 'stock-market';
+  title = 'Stock Market App';
 
   ngOnInit(): void {
-    console.log('AppComponent::ngOnInit');
   }
 }

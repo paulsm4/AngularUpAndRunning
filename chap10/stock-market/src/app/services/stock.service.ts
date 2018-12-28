@@ -6,7 +6,6 @@ export class StockService {
 
   private stocks: Stock[];
   constructor() {
-    console.log('StockService::constructor()');
     this.stocks = [
       new Stock('Test Stock Company', 'TSC', 85, 80, 'NASDAQ'),
       new Stock('Second Stock Company', 'SSC', 10, 20, 'NSE'),
@@ -14,14 +13,12 @@ export class StockService {
     ];
    }
 
-  getStocks(): Stock[] {
-    console.log('StockService::getStocks()');
+  getStocks() : Stock[] {
     return this.stocks;
   }
 
   createStock(stock: Stock) {
-    console.log('StockService::createStock()', stock);
-    const foundStock = this.stocks.find(each => each.code === stock.code);
+    let foundStock = this.stocks.find(each => each.code === stock.code);
     if (foundStock) {
       return false;
     }
@@ -30,8 +27,7 @@ export class StockService {
   }
 
   toggleFavorite(stock: Stock) {
-    console.log('StockService::toggleFavorite()', stock);
-    const foundStock = this.stocks.find(each => each.code === stock.code);
+    let foundStock = this.stocks.find(each => each.code === stock.code);
     foundStock.favorite = !foundStock.favorite;
   }
 }

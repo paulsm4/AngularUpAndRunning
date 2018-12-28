@@ -1,18 +1,13 @@
 export class Stock {
   favorite = false;
 
-  constructor(
-    public name: string,
-    public code: string,
-    public price: number,
-    public previousPrice: number,
-    public exchange: string
-  ) {
-    console.log('Stock::constructor()');
-  }
+  constructor(public name: string,
+              public code: string,
+              public price: number,
+              public previousPrice: number,
+              public exchange: string) {}
 
   isPositiveChange(): boolean {
-    console.log('Stock::isPositiveChange()');
     return this.price >= this.previousPrice;
   }
 }

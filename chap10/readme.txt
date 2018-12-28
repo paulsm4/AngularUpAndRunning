@@ -245,6 +245,42 @@ https://angular.io/guide/testing#service-tests
    <= Verified the app itself works just fine.
       Took screenshot: ss_initial_screen.png
 
+5. Still encountering problems; "old" vs. "new" syntax:
 
-     
-    
+   - EXAMPLE:
+Error: StaticInjectorError(DynamicTestModule)[CreateStockComponent -> StockService]: 
+  StaticInjectorError(Platform: core)[CreateStockComponent -> StockService]: 
+    NullInjectorError: No provider for StockService!
+
+   - ENVIRONMENTS:
+OS: win32 x64                                           OS: win32 x64
+Angular: 5.2.0                                          Angular: 7.1.4                                                 
+Node: 8.11.1                                            Node: 8.11.1
+... common, compiler, compiler-cli, core, forms, http   ... animations, cli, common, compiler, compiler-cli, core, forms    
+... platform-browser, platform-browser-dynamic, router  ... http, language-service, platform-browser
+                                                        ... platform-browser-dynamic, router
+@angular/animations: 5.2.9                              @angular-devkit/architect         0.11.4 
+@angular/cli: 1.7.4                                     @angular-devkit/build-angular     0.11.4
+@angular/language-service: 5.2.9                        @angular-devkit/build-optimizer   0.11.4
+@angular-devkit/build-optimizer: 0.3.2                  @angular-devkit/build-webpack     0.11.4
+@angular-devkit/core: 0.3.2                             @angular-devkit/core              7.1.4
+@angular-devkit/schematics: 0.3.2                       @angular-devkit/schematics        7.1.4
+@ngtools/json-schema: 1.2.0                             @ngtools/webpack                  7.1.4
+@ngtools/webpack: 1.10.2                                @schematics/angular               7.1.4
+@schematics/angular: 0.3.2                              @schematics/update                0.11.4
+@schematics/package-update: 0.3.2                       rxjs                              6.3.3
+typescript: 2.5.3                                       typescript                        3.1.6
+webpack: 3.11.0                                         webpack                           4.23.1
+   <= Shshadri/Github examples                            <= Current Angular 7.x
+
+   - WORKAROUND:
+     - *DELETED* Chap10/stock-market/src/app*.*
+     - *REPLACED* with GitHub Chapter10/simple-servie/src/app/*.*
+     - Edited import paths
+       <= EXAMPLE: "app/model/stock" => "../../model/stock"
+     - Disable tslint wwarnings as needed:
+        /* tslint:disable prefer-const */
+        /* tslint:disable no-var-keyword */
+     - ng test => OK
+         7 specs, 0 failures
+     - ng serve => OK

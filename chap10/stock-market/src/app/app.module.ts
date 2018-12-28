@@ -4,17 +4,17 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
-import { CreateStockComponent } from './stock/create-stock/create-stock.component';
 import { StockItemComponent } from './stock/stock-item/stock-item.component';
+import { CreateStockComponent } from './stock/create-stock/create-stock.component';
 import { StockListComponent } from './stock/stock-list/stock-list.component';
 import { StockService } from './services/stock.service';
 
 @NgModule({
   declarations: [
     AppComponent,
-    CreateStockComponent,
     StockItemComponent,
-    StockListComponent
+    CreateStockComponent,
+    StockListComponent,
   ],
   imports: [
     BrowserModule,
@@ -22,7 +22,7 @@ import { StockService } from './services/stock.service';
     HttpModule
   ],
   providers: [
-    StockService
+    StockService,
   ],
   bootstrap: [AppComponent]
 })
