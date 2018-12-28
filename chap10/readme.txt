@@ -39,3 +39,212 @@ CREATE src/app/services/stock.service.spec.ts (328 bytes)
 CREATE src/app/services/stock.service.ts (134 bytes)
      <= All auto-generated code to this point...
      
+2. Add application (custom) code
+   - ng test
+     <= Verify OK: Karma v3.1.4 - connected, 7 specs, 0 failures
+
+     NOTE: 
+     Auto-generated karma.conf.js resides in "stock-market/src" 
+     <= *NOT* necessarily in "stock-market/" project root, as in GitHub examples...
+
+   - code .
+     <= Start VSCode
+
+   - app.module.ts
+     <= Updated imports, @NgModule imports[] and providers[]
+ 
+     ERROR: import { HttpModule } from '@angular/http';
+     <= Can't find module '@angular/http'
+     - npm install @angular/http --save =>
+npm WARN optional SKIPPING OPTIONAL DEPENDENCY: fsevents@1.2.4 (node_modules\fsevents):
+npm WARN notsup SKIPPING OPTIONAL DEPENDENCY: Unsupported platform for fsevents@1.2.4: wanted {"os":"darwin","arch":"any"} (current: {"os":"win32","arch":"x64"})
++ @angular/http@7.1.4
+added 1 package from 1 contributor and audited 40180 packages in 18.574s
+     <= Perfect (ignore warning about irrelevant MacOS dependency...)
+
+   - app.component.ts, .html
+     <= Added OnInit, HTML markup for <app-stock-list>, <app-create-stock>
+
+   - model/stock.ts
+     <= Implemented class
+
+     NOTES:
+     - We're back to "class" (vs. "interface"): Yay!
+     - *NO* .spec unit test for this guy...
+
+   - stock/stock-item/stock-item.component.ts, .html, .css
+
+   - stock/stock-list/stock-list.component.ts, .html, .css
+
+   - stock/create-stock/create-stock.component.ts, .html, .css
+
+   - services/stock.service.ts
+
+3. ng test => FAIL:
+   7 specs, 7 failures
+
+    1) AppComponent should create the app:
+    2) AppComponent should have as title 'stock-market'
+    3) AppComponent should render title in a h1 tag
+    <= All exactly the same error:
+Failed: Template parse errors:
+'app-stock-list' is not a known element:
+1. If 'app-stock-list' is an Angular component, then verify that it is part of this module.
+2. If 'app-stock-list' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message. ("
+  {{title}}
+</h1>
+[ERROR ->]<app-stock-list></app-stock-list>
+<app-create-stock></app-create-stock>
+"): ng:///DynamicTestModule/AppComponent.html@3:0
+'app-create-stock' is not a known element:
+1. If 'app-create-stock' is an Angular component, then verify that it is part of this module.
+2. If 'app-create-stock' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message. ("
+</h1>
+<app-stock-list></app-stock-list>
+[ERROR ->]<app-create-stock></app-create-stock>
+"): ng:///DynamicTestModule/AppComponent.html@4:0 
+
+    4) StockService should be created
+    5) CreateStockComponent should create
+    <= Both the same error
+Error: StaticInjectorError[StockService]: 
+  NullInjectorError: No provider for StockService!
+    at NullInjector.push../node_modules/@angular/core/fesm5/core.js.NullInjector.get (http://localhost:9876/node_modules/@angular/core/fesm5/core.js?:3228:1)
+    at resolveToken (http://localhost:9876/node_modules/@angular/core/fesm5/core.js?:3473:1)
+    ...
+
+    6) StockItemComponent should create
+TypeError: Cannot read property 'favorite' of undefined
+    at Object.eval [as updateDirectives] (ng:///DynamicTestModule/StockItemComponent.ngfactory.js:45:32)
+    at Object.debugUpdateDirectives [as updateDirectives] (http://localhost:9876/node_modules/@angular/core/fesm5/core.js?:22477:1)
+    ...
+
+    7) StockListComponent should create
+Failed: Template parse errors:
+Can't bind to 'stock' since it isn't a known property of 'app-stock-item'.
+1. If 'app-stock-item' is an Angular component and it has 'stock' input, then verify that it is part of this module.
+2. If 'app-stock-item' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component. ("<app-stock-item *ngFor="let stock of stocks" [ERROR ->][stock]="stock"
+                (toggleFavorite)="onToggleFavorite($event)">
+</app-stock-item>
+"): ng:///DynamicTestModule/StockListComponent.html@0:45
+
+   - app.module.ts =>
+NgModule({
+  declarations: [
+    AppComponent,
+    CreateStockComponent,
+    StockItemComponent,
+    StockListComponent
+  ],
+  imports: [
+    BrowserModule,
+    FormsModule,
+    HttpModule
+  ],
+  providers: [
+    StockService
+  ],
+  bootstrap: [AppComponent]
+})
+  <= Appears 100% OK: no changes needed...
+     
+   - create-stock.component.html
+     <= Whoops!  Failed to update HTML!
+
+     - FIRST PROBLEM:
+    <div *ngIf="stockName.errors && stockName.errors.required">Stock Name is Mandatory</div>
+ERROR: Identifier 'required' is not defined. '__type' does not contain such a member
+
+      - Links:
+https://stackoverflow.com/questions/47466324/identifier-required-is-not-defined-type-does-not-contain-such-a-member
+          OPTIONS:
+          - try to add "?" after "price".
+          - <div *ngIf="price.errors['required']">
+          - <div *ngIf="!!price.errors.required">Price is required.</div>
+
+     - SOLUTION:
+      <div *ngIf="stockCode.dirty && stockCode.invalid">
+      <div *ngIf="stockCode.errors['required']">Stock Code is Mandatory</div>
+      <div *ngIf="stockCode.errors['minlength']">Stock Code must be atleast of length 2</div>
+        <= This is better than "!!" (which is how we resolved it the last time...)
+
+   - ng test => STILL FAILS, STILL 7 specs, 7 failures...
+
+   - karma.conf.js
+     <= OK
+
+   - test.ts
+     <= Also OK
+
+   - app.component.spec.ts:
+/* Added these imports */
+...
+import { CreateStockComponent } from './stock/create-stock/create-stock.component';
+import { StockItemComponent } from './stock/stock-item/stock-item.component';
+import { StockListComponent } from './stock/stock-list/stock-list.component';
+import { Stock } from './model/stock';
+...
+describe('AppComponent', () => {
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [
+        AppComponent,
+        /* Added these declarations */
+        CreateStockComponent,
+        StockItemComponent,
+        StockListComponent
+      ],
+    }).compileComponents();
+   <= IMPROVEMENT.
+      STILL "7 specs, 7 failures"...
+      ... BUT NEW MSG:
+AppComponent should create the app
+Failed: Template parse errors:
+There is no directive with "exportAs" set to "ngForm" ("If="message">{{message}}</div>
+<div class="form-group">
+  <form (ngSubmit)="createStock(stockForm)" [ERROR ->]#stockForm="ngForm">
+    <div class="stock-name">
+      <input type="text"
+"): ng:///DynamicTestModule/CreateStockComponent.html@4:44
+There is no directive with "exportAs" set to "ngModel" ("
+             required
+             name="stockName"
+             [ERROR ->]#stockName="ngModel"
+             [(ngModel)]="stock.name">
+
+   - app.component.spec.ts (again...)
+import { FormsModule } from '@angular/forms';
+...
+describe('AppComponent', () => {
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      /* Added this import */
+      imports: [ FormsModule ],
+      declarations: [
+      ...
+      <= STILL "7 specs, 7 failures", BUT NEW MSG:
+AppComponent should create the app
+Error: StaticInjectorError(DynamicTestModule)[CreateStockComponent -> StockService]: 
+  StaticInjectorError(Platform: core)[CreateStockComponent -> StockService]: 
+    NullInjectorError: No provider for StockService!
+
+     - app.module.ts
+       <= "StockService" definitely listed in "providers: []" stanza: OK
+
+     - create-stock.component.ts:
+       <= constructor(private stockService: StockService) {...}: OK - we're definitely declaring the injectable in the constructor...
+
+     - Links:
+https://angular.io/guide/testing
+https://angular.io/guide/testing#service-tests
+       <= Current problem related to testing with "StockService"
+          Since Chap10 is about "unit testing services" anyway, let's just bail for now
+
+4. ng serve => OK
+   <= Verified the app itself works just fine.
+      Took screenshot: ss_initial_screen.png
+
+
+     
+    

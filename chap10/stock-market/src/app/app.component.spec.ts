@@ -1,11 +1,22 @@
 import { TestBed, async } from '@angular/core/testing';
 import { AppComponent } from './app.component';
+/* Added these imports */
+import { CreateStockComponent } from './stock/create-stock/create-stock.component';
+import { StockItemComponent } from './stock/stock-item/stock-item.component';
+import { StockListComponent } from './stock/stock-list/stock-list.component';
+import { FormsModule } from '@angular/forms';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      /* Added this import */
+      imports: [ FormsModule ],
       declarations: [
-        AppComponent
+        AppComponent,
+        /* Added these declarations */
+        CreateStockComponent,
+        StockItemComponent,
+        StockListComponent
       ],
     }).compileComponents();
   }));

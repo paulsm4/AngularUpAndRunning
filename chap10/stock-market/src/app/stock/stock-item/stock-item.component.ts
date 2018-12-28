@@ -1,15 +1,25 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+
+import { Stock } from '../../model/stock';
 
 @Component({
   selector: 'app-stock-item',
   templateUrl: './stock-item.component.html',
   styleUrls: ['./stock-item.component.css']
 })
-export class StockItemComponent implements OnInit {
+export class StockItemComponent  {
 
-  constructor() { }
+  @Input() public stock: Stock;
+  @Output() toggleFavorite: EventEmitter<Stock>;
 
-  ngOnInit() {
+  constructor() {
+    console.log('StockItemComponent::constructor');
+    this.toggleFavorite = new EventEmitter<Stock>();
+   }
+
+  onToggleFavorite(event) {
+    console.log('StockItemComponent::onToggleFavorite', event);
+    this.toggleFavorite.emit(this.stock);
   }
 
 }
