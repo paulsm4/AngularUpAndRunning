@@ -5,6 +5,7 @@ import { StockService } from '../../services/stock.service';
 import { StockItemComponent } from '../../stock/stock-item/stock-item.component';
 import { Stock } from '../../model/stock';
 
+// Example 1: Use the "live" service, with "live" data
 describe('StockListComponent With Real Service', () => {
   let component: StockListComponent;
   let fixture: ComponentFixture<StockListComponent>;
@@ -29,6 +30,7 @@ describe('StockListComponent With Real Service', () => {
   });
 });
 
+// Example 2: Get a reference to the live service, mock out the "getStocks()" query
 describe('StockListComponent With Mock Service', () => {
   let component: StockListComponent;
   let fixture: ComponentFixture<StockListComponent>;
@@ -45,7 +47,7 @@ describe('StockListComponent With Mock Service', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(StockListComponent);
     component = fixture.componentInstance;
-    // Always get the Service from the Injector!
+    // Use the injector in the test fixture to get a handle to the stock service
     stockService = fixture.debugElement.injector.get(StockService);
     /* tslint:disable prefer-const */
     let spy = spyOn(stockService, 'getStocks')
@@ -60,12 +62,13 @@ describe('StockListComponent With Mock Service', () => {
   });
 });
 
-
+// Example 3: use fake service and hard-coded fake data
 describe('StockListComponent With Fake Service', () => {
   let component: StockListComponent;
   let fixture: ComponentFixture<StockListComponent>;
 
   beforeEach(async(() => {
+    // Declare the fake: same API as the "real" stockService
     let stockServiceFake = {
       getStocks: () => {
         return [new Stock('Fake Stock', 'FS', 800, 900, 'NYSE')];
@@ -73,6 +76,7 @@ describe('StockListComponent With Fake Service', () => {
     };
     TestBed.configureTestingModule({
       declarations: [ StockListComponent, StockItemComponent ],
+      // Inject the fake StockService
       providers: [ {
         provide: StockService,
         useValue: stockServiceFake

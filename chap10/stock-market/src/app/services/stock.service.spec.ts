@@ -34,3 +34,4 @@ describe('StockService', () => {
     expect(stockService.getStocks()[2].code).toEqual('LSC');
   });
 });
+/* tslint:enable */
