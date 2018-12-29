@@ -278,9 +278,173 @@ webpack: 3.11.0                                         webpack                 
      - *REPLACED* with GitHub Chapter10/simple-servie/src/app/*.*
      - Edited import paths
        <= EXAMPLE: "app/model/stock" => "../../model/stock"
-     - Disable tslint wwarnings as needed:
+     - Disable tslint warnings as needed:
         /* tslint:disable prefer-const */
         /* tslint:disable no-var-keyword */
      - ng test => OK
          7 specs, 0 failures
      - ng serve => OK
+===================================================================================================
+
+* Chap10 Create stock/async test
+  - ng test => ERROR:
+CreateStockComponent should create stock through service
+Expected 'Successfully created stock with stock code: MNTS' to equal 'Stock with code MNTS successfully created'.
+Error: Expected 'Successfully created stock with stock code: MNTS' to equal 'Stock with code MNTS successfully created'.
+    at stack (http://localhost:9876/absoluteD:/paul/proj/AngularUpAndRunning/tutorials/chap10/stock-market/node_modules/jasmine-core/lib/jasmine-core/jasmine.js?0b1eaf7a13cae32191eadea482cfc96ae41fc22b:2455:17)
+    at buildExpectationResult (http://localhost:9876/absoluteD:/paul/proj/AngularUpAndRunning/tutorials/chap10/stock-market/node_modules/jasmine-core/lib/jasmine-core/jasmine.js?0b1eaf7a13cae32191eadea482cfc96ae41fc22b:2425:14)
+    at Spec.expectationResultFactory (http://localhost:9876/absoluteD:/paul/proj/AngularUpAndRunning/tutorials/chap10/stock-market/node_modules/jasmine-core/lib/jasmine-core/jasmine.j
+    ...
+Failed: Uncaught (in promise): TypeError: Cannot read property 'nativeElement' of null
+TypeError: Cannot read property 'nativeElement' of null
+    at http://localhost:9876/src/app/stock/create-stock/create-stock.component.spec.ts?:39:30
+    at ZoneDelegate../node_modules/zone.js/dist/zone.js.ZoneDelegate.invoke (http://localhost:9876/node_modules/zone.js/dist/zone.js?:388:1)
+
+  - create-stock.component.spec.ts:
+      it('should create stock through service', async(() => {
+         ...
+         fixture.whenStable().then(() => {
+           fixture.detectChanges();
+           expect(component.message)
+               .toEqual('Stock with code MNTS successfully created');
+           const messageEl = fixture.debugElement.query(
+               By.css('.message')).nativeElement;
+               <= It doesn't like "By.css('.message')).nativeElemnt
+    - Links:
+https://stackoverflow.com/questions/41399076/angular2-testing-get-element-by-id
+https://angular.io/guide/testing
+      - EXAMPLE:
+          const bannerDe: DebugElement = fixture.debugElement;
+          const paragraphDe = bannerDe.query(By.css('p'));
+          const p: HTMLElement = paragraphDe.nativeElement;
+          expect(p.textContent).toEqual('banner works!');
+      - By.css() static method selects DebugElement nodes with a standard CSS selector.
+      - The query returns a DebugElement for the paragraph.
+      - You must unwrap that result to get the paragraph element.
+
+    - Final code:
+      - create-stock.component.html:
+   <div *ngIf="stockCode.dirty && stockCode.invalid">
+      <div *ngIf="stockCode.errors['required']">Stock Code is Mandatory</div>
+      <div *ngIf="stockCode.errors['minlength']">Stock Code must be atleast of length 2</div>
+      <= "stockCode.errors.minlength" syntax does *NOT* work!!!
+
+      - create-stock.component.ts:
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { FormsModule } from '@angular/forms';
+import { By } from '@angular/platform-browser';
+import { DebugElement } from '@angular/core';
+...
+describe('CreateStockComponent', () => {
+  let component: CreateStockComponent;
+  let fixture: ComponentFixture<CreateStockComponent>;
+
+  beforeEach(async(() => {
+      // <= Define as "async()" lambda
+    TestBed.configureTestingModule({
+      declarations: [ CreateStockComponent ],
+      providers: [ StockService ],
+      imports: [ FormsModule ]
+    })
+    .compileComponents();
+  }));
+
+  beforeEach(() => {
+      // <= Define synchronously (do *BOTH* for each test)
+    fixture = TestBed.createComponent(CreateStockComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+  ...
+  fixture.whenStable().then(() => {
+      const expectedMsg = 'Successfully created stock with stock code: MNTS';
+      // Don't do any of this until fixture Promise completes
+      fixture.detectChanges();
+      expect(component.message)
+          // .toEqual('Stock with code MNTS successfully created');  // WRONG MESSAGE!!!
+          .toEqual(expectedMsg);
+      const messageDe: DebugElement = fixture.debugElement;
+      expect(messageDe).toBeTruthy();
+      const paragraphDe = messageDe.query(By.css('.message'));
+      console.log('CreateStockComponent test: messageDe', messageDe, 'paragraphDe', paragraphDe);
+      expect(paragraphDe).toBeTruthy();
+      const p: HTMLElement = paragraphDe.nativeElement;
+      expect(p).toBeTruthy();
+      console.log('CreateStockComponent test: messageDe', messageDe, 'paragraphDe', paragraphDe, 'p', p);
+      expect(p.textContent).toBe(expectedMsg);
+    });
+  }));
+
+  - ng test => SUCCESS    
+      8 specs, 0 failures
+
+  - Chrome dev console:
+CreateStockComponent test: messageDe DebugElement, paragraphDe DebugElement
+CreateStockComponent test: messageDe DebugElement, paragraphDe DebugElement, p
+
+    - Dev console: object details:
+CreateStockComponent test: 
+  messageDe DebugElementattributes: {ng-version: "7.1.4"}childNodes: (5) [DebugElement, DebugElement, DebugElement, DebugElement, DebugElement]children: (...)classes: {}componentInstance: (...)context: (...)injector: (...)listeners: []nativeElement: div#root0nativeNode: div#root0parent: nullproperties: {}providerTokens: (...)references: (...)styles: {}_debugContext: DebugContext_ {view: {…}, nodeIndex: 0, nodeDef: {…}, elDef: {…}, elView: {…}}__proto__: DebugNode paragraphDe DebugElementattributes: {class: "message"}childNodes: [DebugNode]children: (...)classes: {}componentInstance: (...)context: (...)injector: (...)listeners: []name: "div"nativeElement: div.messagenativeNode: div.messageparent: DebugElement {nativeNode: div#root0, _debugContext: DebugContext_, listeners: Array(0), parent: null, properties: {…}, …}properties: {}providerTokens: (...)references: (...)styles: {}_debugContext: DebugContext_ {view: {…}, nodeIndex: 2, nodeDef: {…}, elDef: {…}, elView: {…}}__proto__: DebugNode
+
+CreateStockComponent test: 
+  messageDe 
+    DebugElement 
+      attributes: {ng-version: "7.1.4"}
+      childNodes: (5) [DebugElement, DebugElement, DebugElement, DebugElement, DebugElement]
+      children: (...)
+      classes: {}componentInstance: (...)
+      context: (...)
+      injector: (...)
+      listeners: []
+      nativeElement: div#root0
+      nativeNode: div#root0
+      parent: null
+      properties: {}
+      providerTokens: (...)
+      references: (...)
+      styles: {}
+      _debugContext: DebugContext_ {view: {…}, nodeIndex: 0, nodeDef: {…}, elDef: {…}, elView: {…}}
+      __proto__: DebugNode
+  paragraphDe 
+    DebugElement
+      attributes: {class: "message"}
+      childNodes: [DebugNode]
+      children: (...)
+      classes: {}
+      componentInstance: (...)
+      context: (...)injector: (...)listeners: []name: "div"
+      nativeElement: div.message
+      nativeNode: div.message
+      parent: DebugElement {nativeNode: div#root0, _debugContext: DebugContext_, listeners: Array(0), parent: null, properties: {…}, …}
+      properties: {}
+      providerTokens: (...)
+      references: (...)
+      styles: {}
+      _debugContext: DebugContext_ {view: {…}, nodeIndex: 2, nodeDef: {…}, elDef: {…}, elView: {…}}
+      __proto__: DebugNode
+  paragraphDe
+    DebugElement
+      attributes: {class: "message"}
+      childNodes: [DebugNode]
+      children: (...)
+      classes: {}
+      componentInstance: (...)
+      context: (...)
+      injector: (...)
+      listeners: []
+      name: "div"
+      nativeElement: div.message
+      nativeNode: div.message
+      parent: DebugElement {nativeNode: div#root0, _debugContext: DebugContext_, listeners: Array(0), parent: null, properties: {…}, …}
+      properties: {}
+      providerTokens: (...)
+      references: (...)
+      styles: {}
+      _debugContext: DebugContext_ {view: {…}, nodeIndex: 2, nodeDef: {…}, elDef: {…}, elView: {…}}
+      __proto__: DebugNode 
+  p 
+    <div _ngcontent-c0 class=​"message">​Successfully created stock with stock code: MNTS​</div>​
+
+===================================================================================================
+
+
