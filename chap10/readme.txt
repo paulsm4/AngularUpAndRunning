@@ -446,5 +446,35 @@ CreateStockComponent test:
     <div _ngcontent-c0 class=​"message">​Successfully created stock with stock code: MNTS​</div>​
 
 ===================================================================================================
+* Chap10: HTTP Unit tests
+
+1. Rebuild Chap10/final section from Github/chapter9/simple-http:
+   - git reset --hard
+     <= Nuke all current changes
+   - npm install
+     <= Re-read Node modules
+   - del chap10/stock-market/app/src/*.*; restore app/src from Github/chapter9/simple-http
+   - code .
+     <= Touch *ALL* .ts, .html modules to clean up NG/Typescript/RxJS vesion changes
+        relative paths, import "rxjs/Observable" vs. "rxjs", *ngIf="stockCode.errors.required" vs "stockCode.errors['required']", etc. etc.
+     <= At this point, there are NO *.spec.ts tests, besides an empty "app.component.spec.ts"
+
+2. stock-list-component.spec.ts
+   - Initial error, auto-generated test:
+StockListComponent should create
+Failed: Template parse errors:
+Can't bind to 'stock' since it isn't a known property of 'app-stock-item'.
+1. If 'app-stock-item' is an Angular component and it has 'stock' input, then verify that it is part of this module.
+2. If 'app-stock-item' is a Web Component then add 'CUSTOM_ELEMENTS_SCHEMA' to the '@NgModule.schemas' of this component to suppress this message.
+3. To allow any property add 'NO_ERRORS_SCHEMA' to the '@NgModule.schemas' of this component. ("<app-stock-item *ngFor="let stock of stocks$ | async"
+                [ERROR ->][stock]="stock">
+</app-stock-item>
+"): ng:///DynamicTestModule/StockListComponent.html@1:16
+    <= Template refers to "new stuff" the .spec.ts doesn't know about...
+    
+    - NOTE:
+      It's currently not possible to auto-generate a new test for an existing component
+         https://github.com/angular/angular-cli/issues/7727
+           Generate .spec files for already existing components / services #7727
 
 

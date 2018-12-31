@@ -9,5 +9,6 @@ export class AppComponent implements OnInit {
   title = 'Stock Market App';
 
   ngOnInit(): void {
+    console.log('AppComponent::ngOnInit()');
   }
 }

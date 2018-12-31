@@ -1,99 +1,69 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, inject } from '@angular/core/testing';
+import { HttpClientModule } from '@angular/common/http';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { By } from '@angular/platform-browser';
 
 import { StockListComponent } from './stock-list.component';
 import { StockService } from '../../services/stock.service';
-import { StockItemComponent } from '../../stock/stock-item/stock-item.component';
+import { StockItemComponent } from '../stock-item/stock-item.component';
 import { Stock } from '../../model/stock';
 
-// Example 1: Use the "live" service, with "live" data
+
 describe('StockListComponent With Real Service', () => {
   let component: StockListComponent;
   let fixture: ComponentFixture<StockListComponent>;
+  let httpBackend: HttpTestingController;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ StockListComponent, StockItemComponent ],
-      providers: [ StockService ]
+      providers: [ StockService ],
+      imports: [
+        HttpClientModule,
+        HttpClientTestingModule
+      ]
     })
     .compileComponents();
   }));
 
-  beforeEach(() => {
+  beforeEach(inject([HttpTestingController],
+      (backend: HttpTestingController) => {
+    httpBackend = backend;
     fixture = TestBed.createComponent(StockListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  });
-
-  it('should load stocks from real service on init', () => {
-    expect(component).toBeTruthy();
-    expect(component.stocks.length).toEqual(3);
-  });
-});
-
-// Example 2: Get a reference to the live service, mock out the "getStocks()" query
-describe('StockListComponent With Mock Service', () => {
-  let component: StockListComponent;
-  let fixture: ComponentFixture<StockListComponent>;
-  let stockService: StockService;
-
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ StockListComponent, StockItemComponent ],
-      providers: [ StockService ]
-    })
-    .compileComponents();
+    httpBackend.expectOne({
+      url: '/api/stock',
+      method: 'GET'
+    }, 'Get list of stocks').flush([{
+      name: 'Test Stock 1',
+      code: 'TS1',
+      price: 80,
+      previousPrice: 90,
+      exchange: 'NYSE'
+    }, {
+      name: 'Test Stock 2',
+      code: 'TS2',
+      price: 800,
+      previousPrice: 900,
+      exchange: 'NYSE'
+    }]);
   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(StockListComponent);
-    component = fixture.componentInstance;
-    // Use the injector in the test fixture to get a handle to the stock service
-    stockService = fixture.debugElement.injector.get(StockService);
-    /* tslint:disable prefer-const */
-    let spy = spyOn(stockService, 'getStocks')
-        .and.returnValue([new Stock('Mock Stock', 'MS', 800, 900, 'NYSE')])
-    fixture.detectChanges();
-  });
-
-  it('should load stocks from mocked service on init', () => {
+  it('should load stocks from real service on init',
+      async(() => {
     expect(component).toBeTruthy();
-    expect(component.stocks.length).toEqual(1);
-    expect(component.stocks[0].code).toEqual('MS');
-  });
-});
+    expect(component.stocks$).toBeTruthy();
 
-// Example 3: use fake service and hard-coded fake data
-describe('StockListComponent With Fake Service', () => {
-  let component: StockListComponent;
-  let fixture: ComponentFixture<StockListComponent>;
-
-  beforeEach(async(() => {
-    // Declare the fake: same API as the "real" stockService
-    let stockServiceFake = {
-      getStocks: () => {
-        return [new Stock('Fake Stock', 'FS', 800, 900, 'NYSE')];
-      }
-    };
-    TestBed.configureTestingModule({
-      declarations: [ StockListComponent, StockItemComponent ],
-      // Inject the fake StockService
-      providers: [ {
-        provide: StockService,
-        useValue: stockServiceFake
-      } ]
-    })
-    .compileComponents();
+    fixture.whenStable().then(() => {
+      fixture.detectChanges();
+      const stockItems = fixture.debugElement.queryAll(
+        By.css('app-stock-item'));
+      expect(stockItems.length).toEqual(2);
+    });
   }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(StockListComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should load stocks from fake service on init', () => {
-    expect(component).toBeTruthy();
-    expect(component.stocks.length).toEqual(1);
-    expect(component.stocks[0].code).toEqual('FS');
+  afterEach(() => {
+    httpBackend.verify();
   });
 });

@@ -1,58 +1,73 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
+import { async, ComponentFixture, TestBed, inject } from '@angular/core/testing';
+import { HttpClientModule, HttpRequest } from '@angular/common/http';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { By } from '@angular/platform-browser';
-import { DebugElement } from '@angular/core';
-import { CreateStockComponent } from './create-stock.component';
-import { Stock } from '../../model/stock';
-import { StockService } from '../../services/stock.service';
+import { FormsModule } from '@angular/forms';
 
-describe('CreateStockComponent', () => {
+import { StockService } from '../../services/stock.service';
+import { Stock } from '../../model/stock';
+import { CreateStockComponent } from '../create-stock/create-stock.component';
+
+describe('CreateStockComponent With Real Service', () => {
   let component: CreateStockComponent;
   let fixture: ComponentFixture<CreateStockComponent>;
+  let httpBackend: HttpTestingController;
 
-  // Asynchronous setup for each test
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ CreateStockComponent ],
       providers: [ StockService ],
-      imports: [ FormsModule ]
+      imports: [
+        HttpClientModule,
+        HttpClientTestingModule,
+        FormsModule
+      ]
     })
     .compileComponents();
   }));
 
-  // Synchronous setup for each test (do both)
-  beforeEach(() => {
+  beforeEach(inject([HttpTestingController],
+      (backend: HttpTestingController) => {
+    httpBackend = backend;
     fixture = TestBed.createComponent(CreateStockComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  });
+  }));
 
-  // This test will execute asynchronously
-  // NOTE: alternative is to use "fakeAsync"
-  it('should create stock through service', async(() => {
+  it('should make call to create stock and handle failure',
+      async(() => {
     expect(component).toBeTruthy();
-    component.stock = new Stock(
-      'My New Test Stock', 'MNTS', 100, 120, 'NYSE');
+    fixture.detectChanges();
 
-    // Execute asynchronously
+    component.stock = {
+      name: 'Test Stock',
+      price: 200,
+      previousPrice: 500,
+      code: 'TSS',
+      exchange: 'NYSE',
+      favorite: false
+    };
+
     component.createStock({valid: true});
 
+    /* tslint:disable prefer-const */
+    let httpReq = httpBackend.expectOne({
+      url: '/api/stock',
+      method: 'POST'
+    }, 'Create Stock with Failure');
+    expect(httpReq.request.body).toEqual(component.stock);
+    httpReq.flush({msg: 'Stock already exists.'},
+        {status: 400, statusText: 'Failed!!'});
+
     fixture.whenStable().then(() => {
-      const expectedMsg = 'Successfully created stock with stock code: MNTS';
-      // Don't do any of this until fixture Promise completes
       fixture.detectChanges();
-      expect(component.message)
-          // .toEqual('Stock with code MNTS successfully created');  // WRONG MESSAGE!!!
-          .toEqual(expectedMsg);
-      const messageDe: DebugElement = fixture.debugElement;
-      expect(messageDe).toBeTruthy();
-      const paragraphDe = messageDe.query(By.css('.message'));
-      console.log('CreateStockComponent test: messageDe', messageDe, 'paragraphDe', paragraphDe);
-      expect(paragraphDe).toBeTruthy();
-      const p: HTMLElement = paragraphDe.nativeElement;
-      expect(p).toBeTruthy();
-      console.log('CreateStockComponent test: messageDe', messageDe, 'paragraphDe', paragraphDe, 'p', p);
-      expect(p.textContent).toBe(expectedMsg);
+      const messageEl = fixture.debugElement.query(
+          By.css('.message')).nativeElement;
+      expect(messageEl.textContent).toEqual('Stock already exists.');
     });
   }));
+
+  afterEach(() => {
+    httpBackend.verify();
+  });
 });
