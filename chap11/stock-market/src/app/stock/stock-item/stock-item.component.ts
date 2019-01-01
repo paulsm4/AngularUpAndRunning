@@ -1,15 +1,24 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+
+import { Stock } from '../../model/stock';
+import { StockService } from '../../services/stock.service';
 
 @Component({
   selector: 'app-stock-item',
   templateUrl: './stock-item.component.html',
   styleUrls: ['./stock-item.component.css']
 })
-export class StockItemComponent implements OnInit {
+export class StockItemComponent {
 
-  constructor() { }
+  @Input() public stock: Stock;
 
-  ngOnInit() {
+  constructor(private stockService: StockService) {
+    console.log('StockItemComponent::constructor()', stockService);
   }
 
+  onToggleFavorite(event) {
+    console.log('StockItemComponent::onToggleFavorite()', event);
+    this.stockService.toggleFavorite(this.stock)
+      .subscribe((stock) => this.stock.favorite = !this.stock.favorite);
+  }
 }

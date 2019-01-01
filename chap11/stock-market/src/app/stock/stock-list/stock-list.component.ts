@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { StockService } from '../../services/stock.service';
+import { Stock } from '../../model/stock';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-stock-list',
@@ -7,9 +10,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class StockListComponent implements OnInit {
 
-  constructor() { }
+  public stocks$: Observable<Stock[]>;
+  constructor(private stockService: StockService) {
+    console.log('StockListComponent::constructor()');
+   }
 
   ngOnInit() {
+    console.log('StockListComponent::ngOnInit()');
+    this.stocks$ = this.stockService.getStocks();
   }
-
 }
