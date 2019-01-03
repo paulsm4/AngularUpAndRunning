@@ -3,13 +3,16 @@ import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 
 import { Observable } from 'rxjs';
 
-import { Stock } from '../model/stock';
+import { Stock } from '..//model/stock';
 import { HttpEvent } from '@angular/common/http/src/response';
+import { UserStoreService } from './user-store.service';
 
 @Injectable()
 export class StockService {
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private userStore: UserStoreService) {
+    console.log('StockService::constructor');
+  }
 
   getStocks(): Observable<Stock[]> {
     return this.http.get<Stock[]>('/api/stock');
@@ -24,6 +27,7 @@ export class StockService {
   }
 
   toggleFavorite(stock: Stock): Observable<Stock> {
+    console.log('StockService::toggleFavorite()', stock);
     return this.http.patch<Stock>('/api/stock/' + stock.code,
       {
         favorite: !stock.favorite

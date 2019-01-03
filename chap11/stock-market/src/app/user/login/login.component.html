@@ -8,7 +8,7 @@
              name="username"
              #usernameField="ngModel"
              [(ngModel)]="username">
-      <div *ngIf="usernameField.errors && usernameField.errors['required']">Username is Mandatory</div>
+      <div *ngIf="usernameField.errors && usernameField.errors.required">Username is Mandatory</div>
     </div>
     <div class="password">
       <input type="password"
@@ -17,7 +17,7 @@
              name="password"
              #passwordField="ngModel"
              [(ngModel)]="password">
-      <div *ngIf="passwordField.errors && passwordField.errors['required']">Password is Mandatory</div>
+      <div *ngIf="passwordField.errors && passwordField.errors.required">Password is Mandatory</div>
     </div>
     <button type="submit">Login</button>
   </form>

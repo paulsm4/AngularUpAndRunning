@@ -14,6 +14,7 @@ import { StockListComponent } from './stock/stock-list/stock-list.component';
 import { StockService } from './services/stock.service';
 import { UserService } from './services/user.service';
 import { UserStoreService } from './services/user-store.service';
+import { StockDetailsComponent } from './stock/stock-details/stock-details.component';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { UserStoreService } from './services/user-store.service';
     StockListComponent,
     LoginComponent,
     RegisterComponent,
+    StockDetailsComponent,
   ],
   imports: [
     BrowserModule,

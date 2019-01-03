@@ -9,7 +9,7 @@ import { UserStoreService } from './user-store.service';
 export class UserService {
 
   constructor(private http: HttpClient, private userStore: UserStoreService) {
-    console.log('UserService::constructor()');
+    console.log('UserService::constructor');
   }
 
   login(username: string, password: string): Observable<any> {

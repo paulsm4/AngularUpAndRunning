@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-
 import { Stock } from '../../model/stock';
 import { StockService } from '../../services/stock.service';
 
@@ -13,7 +12,7 @@ export class StockItemComponent {
   @Input() public stock: Stock;
 
   constructor(private stockService: StockService) {
-    console.log('StockItemComponent::constructor()', stockService);
+    console.log('StockItemComponent::constructor');
   }
 
   onToggleFavorite(event) {

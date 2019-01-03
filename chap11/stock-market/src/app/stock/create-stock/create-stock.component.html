@@ -11,7 +11,7 @@
              #stockName="ngModel"
              [(ngModel)]="stock.name">
     </div>
-    <div *ngIf="stockName.errors && stockName.errors['required']">Stock Name is Mandatory</div>
+    <div *ngIf="stockName.errors && stockName.errors.required">Stock Name is Mandatory</div>
     <div class="stock-code">
       <input type="text"
              placeholder="Stock Code"
@@ -22,8 +22,8 @@
              [(ngModel)]="stock.code">
     </div>
     <div *ngIf="stockCode.dirty && stockCode.invalid">
-      <div *ngIf="stockCode.errors['required']">Stock Code is Mandatory</div>
-      <div *ngIf="stockCode.errors['minlength']">Stock Code must be atleast of length 2</div>
+      <div *ngIf="stockCode.errors.required">Stock Code is Mandatory</div>
+      <div *ngIf="stockCode.errors.minlength">Stock Code must be atleast of length 2</div>
     </div>
     <div class="stock-price">
       <input type="number"
@@ -35,7 +35,7 @@
              (ngModelChange)="setStockPrice($event)">
     </div>
     <div *ngIf="stockPrice.dirty && stockPrice.invalid">
-      <div *ngIf="stockPrice.errors['required']">Stock Price is Mandatory</div>
+      <div *ngIf="stockPrice.errors.required">Stock Price is Mandatory</div>
     </div>
     <div class="stock-exchange">
       <div>

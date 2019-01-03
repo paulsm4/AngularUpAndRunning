@@ -24,42 +24,37 @@
    << Saved Git backup >>
 ===================================================================================================
 * Added new, Chap11-specific modules, updated to complete baseline source:
-  1. Auto-generate
-     ng generate component user/login --module=app
-     ng generate component user/register --module=app
-       <= Will automatically created subfolders "user/login/*" and "user/register/*"
-     ng generate class services/stock-app.interceptor --module=app
-     ng generate service services/user --module=app
-     ng generate service services/user-store --module=app
-
-  2. Add <base href="/"> to index.html 
-     <= For routing...
-        OK as-is in auto-generated code
-
-  3. app-routes.module.ts: 
-     <= Add custom components to imports, define custom routes in appRoutes[] member
-
-  4. app-module.ts:
-     <= Manually added FormsModule, HttpClientModule, [StockService] provider
-
-  5. Updated all custom code from baseline
-     <= Stock interface; CreateStock, StockItem, StockList components, etc.
-        Did *NOT* add any of the new, Chap11 stuff (eg, "Login" or "Register")
-
-  6. ng test =>
+1. Auto-generate
+   ng generate component user/login --module=app
+   ng generate component user/register --module=app
+     <= Will automatically created subfolders "user/login/*" and "user/register/*"
+   ng generate class services/stock-app.interceptor --module=app
+   ng generate service services/user --module=app
+   ng generate service services/user-store --module=app
+2. Add <base href="/"> to index.html 
+   <= For routing...
+      OK as-is in auto-generated code
+3. app-routes.module.ts: 
+   <= Add custom components to imports, define custom routes in appRoutes[] member
+4. app-module.ts:
+   <= Manually added FormsModule, HttpClientModule, [StockService] provider
+5. Updated all custom code from baseline
+   <= Stock interface; CreateStock, StockItem, StockList components, etc.
+      Did *NOT* add any of the new, Chap11 stuff (eg, "Login" or "Register")
+6. ng test =>
 ERROR in src/app/app.component.spec.ts(4,36): error TS2307: Cannot find module 'app/stock/stock-item/stock-item.component'.
 src/app/app.component.spec.ts(5,23): error TS2307: Cannot find module 'app/model/stock'.  
      <= Angular7/Typescript3 "relative path" problem again
 
-    - Substituted "import ... './stock/stock-item/stock-item.component'; etc for "'app/stock/stock-item/stock-item.component'"
-      NEXT PROBLEM(S)
-      ng test =>
-      9 specs, 4 failures
-      1) StockService should be created
+  - Substituted "import ... './stock/stock-item/stock-item.component'; etc for "'app/stock/stock-item/stock-item.component'"
+    NEXT PROBLEM(S)
+    ng test =>
+    9 specs, 4 failures
+    1) StockService should be created
 Error: StaticInjectorError[StockService]: 
   NullInjectorError: No provider for StockService!
   ...
-      2) CreateStockComponent should create
+    2) CreateStockComponent should create
 Failed: Template parse errors:
 There is no directive with "exportAs" set to "ngForm" ("="message">{{message}}</div>
 <div class="form-group">
@@ -75,12 +70,12 @@ There is no directive with "exportAs" set to "ngModel" ("
     </div>
 "): ng:///DynamicTestModule/CreateStockComponent.html@10:13
 ...
-      3) StockItemComponent should create
+    3) StockItemComponent should create
 Error: StaticInjectorError(DynamicTestModule)[StockItemComponent -> StockService]: 
   StaticInjectorError(Platform: core)[StockItemComponent -> StockService]: 
     NullInjectorError: No provider for StockService!
     ...
-      4) StockListComponent should create
+    4) StockListComponent should create
 Failed: Template parse errors:
 Can't bind to 'stock' since it isn't a known property of 'app-stock-item'.
 1. If 'app-stock-item' is an Angular component and it has 'stock' input, then verify that it is part of this module.
@@ -96,8 +91,8 @@ Can't bind to 'stock' since it isn't a known property of 'app-stock-item'.
 </app-stock-"): ng:///DynamicTestModule/StockListComponent.html@0:0
   <= We'll bail on these, for the time being...
 
-  7. Configure NodeJS mock server, Angular proxy:
-     $PROJ/Chap11/stock-market/proxy.conf.json:
+7. Configure NodeJS mock server, Angular proxy:
+   $PROJ/Chap11/stock-market/proxy.conf.json:
 {
   "/api": {
     "target": "http://localhost:3000",
@@ -105,7 +100,7 @@ Can't bind to 'stock' since it isn't a known property of 'app-stock-item'.
   }
 }
 
-     - $PROJ/Chap11\run1. bat:
+   - $PROJ/Chap11\run1. bat:
 @rem: Execute mock server
 @rem EXAMPLE USAGE (from "server" sub-folder): ..\run1
 if not exist node_modules (
@@ -113,7 +108,7 @@ call npm install
 )
 set DEBUG=express:* & call node index.js
 
-     - $PROJ/Chap11\run2.bat:
+   - $PROJ/Chap11\run2.bat:
 @rem Execute Angular app
 @rem EXAMPLE USAGE (from "stock-market" root folder): ..\run2
 if not exist node_modules (
@@ -121,16 +116,15 @@ call npm install
 )
 call ng serve --proxy-config proxy.conf.json
 
-  8. Test app:
-     - cd $CHAP11/server
-       npm install
-       <= Load NodeJS/mock server dependencies
-       node index.NodeJS
-       <= Listening on port 3000
-
-     - cd $CHAP11/stock-market
-       ng serve --proxy-config proxy.conf.json
-       <= COMPILE ERROR:
+8. Test app:
+   - cd $CHAP11/server
+     npm install
+     <= Load NodeJS/mock server dependencies
+     node index.NodeJS
+     <= Listening on port 3000
+   - cd $CHAP11/stock-market
+     ng serve --proxy-config proxy.conf.json
+     <= COMPILE ERROR:
 ERROR in src/app/services/stock-app.interceptor.ts(10,14): error TS2420: Class '
 StockAppInterceptor' incorrectly implements interface 'HttpInterceptor'.
   Property 'intercept' is missing in type 'StockAppInterceptor'.
@@ -140,16 +134,16 @@ StockAppInterceptor' incorrectly implements interface 'HttpInterceptor'.
 ERROR 
 Object { headers: {…}, status: 403, statusText: "Forbidden", url: "http://localhost:4200/api/stock", ok: false, name: "HttpErrorResponse", message: "Http failure response for http://localhost:4200/api/stock: 403 Forbidden", error: {…} }
 
-     - $CHAP11/server/index.js:
-       ...
-       app.get('/api/fail', (req, res) => res.status(403).json({msg: 'You are not allowed to access this'}));
-       <= App routing is hitting "fail"; the mock server is giving "HTTP 403"...
+    - $CHAP11/server/index.js:
+      ...
+      app.get('/api/fail', (req, res) => res.status(403).json({msg: 'You are not allowed to access this'}));
+      <= App routing is hitting "fail"; the mock server is giving "HTTP 403"...
 
-     - app-routing.module.ts (mysteriously named "AppRoutesModule" in the book ?!?)
-       <= Eliminated the "rediret" from the book source:
-       - No-go: still HTTP 403/Forbidden...
+    - app-routing.module.ts (mysteriously named "AppRoutesModule" in the book ?!?)
+      <= Eliminated the "rediret" from the book source:
+      - No-go: still HTTP 403/Forbidden...
 
-  8. Do what the book says: modify app.component.html to substitute links to the APIs (vs. load the Angular components):
+9. Do what the book says: modify app.component.html to substitute links to the APIs (vs. load the Angular components):
 <!-- HTML link to APIs, instead of Angular loading the components -->
 <div class="links">
   <span><a routerLink="/login" routerLinkActive="active">Login</a></span>
@@ -165,31 +159,31 @@ Object { headers: {…}, status: 403, statusText: "Forbidden", url: "http://loca
      - Stock List => FAILS: Object { headers: {…}, status: 403, statusText: "Forbidden", url: "http://localhost:4200/api/stock"
      - Create Stock => Form displays OK, [Create] button fails HTTP 403
 
-  9. Do what the book says Part II: Add "real" implementations for: { 
+10. Do what the book says Part II: Add "real" implementations for: { 
        UserStoreService, UserService, LoginComponent, RegisterComponent, StockAppInterceptor
      }\gd
 
-     - user.service.ts:
-       <= Substitute "import { Observable } from 'rxjs';" for(obsolete, RxJS6) "rxjs/Observable"
+    - user.service.ts:
+      <= Substitute "import { Observable } from 'rxjs';" for(obsolete, RxJS6) "rxjs/Observable"
 
-     - login.component.html:
-       <= Substitute  "<div *ngIf="usernameField.errors && usernameField.errors['required']">Username is Mandatory</div>"
-            for (illegal) "usernameField.errors.required"
+    - login.component.html:
+      <= Substitute  "<div *ngIf="usernameField.errors && usernameField.errors['required']">Username is Mandatory</div>"
+           for (illegal) "usernameField.errors.required"
 
-     - login.component.ts:
+    - login.component.ts:
   /* tslint:disable no-inferrable-types */
   public username: string = '';
   public password: string = '';
   public message: string = '';
-       <= Turn off TSLint for this syntax
+      <= Turn off TSLint for this syntax
 
-     - register.component.html:
-      ...
-      <div *ngIf="usernameField.errors && usernameField.errors['required']">Username is Mandatory</div>
-      ...
-      <div *ngIf="passwordField.errors && passwordField.errors['required']">Password is Mandatory</div>
+    - register.component.html:
+     ...
+     <div *ngIf="usernameField.errors && usernameField.errors['required']">Username is Mandatory</div>
+     ...
+     <div *ngIf="passwordField.errors && passwordField.errors['required']">Password is Mandatory</div>
 
-     - register.component.html:
+    - register.component.html:
   /* tslint:disable no-inferrable-types */
   public username: string = '';
   public password: string = '';
@@ -198,7 +192,7 @@ Object { headers: {…}, status: 403, statusText: "Forbidden", url: "http://loca
      - Added "console.log()" trace messages to all...
        EXAMPLE: console.log('LoginComponent::constructor()');
    
-10. Test app (again):
+11. Test app (again):
     - Console log, Initial display:
 CreateStockComponent::constructor()
 CreateStockComponent::initializeStock()
@@ -465,6 +459,132 @@ stock-item.component.ts:16 StockItemComponent::constructor() StockService {http
   << Updated Git >>      
 
 ===================================================================================================
+
+* Chap 11: Route parameters, etc.
+
+1. Create new "StockDetailsComponent":
+   - ng generate component stock/stock-details
+CREATE src/app/stock/stock-details/stock-details.component.html (32 bytes)
+CREATE src/app/stock/stock-details/stock-details.component.spec.ts (671 bytes)
+CREATE src/app/stock/stock-details/stock-details.component.ts (296 bytes)
+CREATE src/app/stock/stock-details/stock-details.component.css (0 bytes)
+UPDATE src/app/app.module.ts (1572 bytes)
+   <= Injected "private stockService: StockService", "private route: ActivatedRoute" into constructor,
+      Read stockCode parameter and invoked stockService.getStock(stockCode) in ngOnInit()
+
+2. Updated StockService (stock.service.ts):
+
+3. Updated app-routing.module.ts:
+import { StockDetailsComponent } from './stock/stock-details.component';
+...
+const appRoutes: Routes = [
+  ..
+  { path: 'stock/:code', component: StockDetailsComponent },
+  { path: '**', redirectTo: '/register' }
+];
+
+4. Test:
+   - ng serve
+
+   - http://localhost:4200 =>
+     <= OK: automatically redirects to "http://localhost:4200/login"
+     - Console:
+Angular is running in the development mode. Call enableProdMode() to enable the production mode.
+user-store.service.ts:8 UserStoreService::constructor()
+user.service.ts:12 UserService::constructor()
+login.component.ts:20 LoginComponent::constructor()
+     <= OK
+     
+   - [Login]: AAA, BBB:
+LoginComponent::login()
+user.service.ts:16 UserService::login() AAA BBB
+stock-app.interceptor.ts:13 StockAppInterceptor::constructor()
+stock-app.interceptor.ts:17 StockAppInterceptor::intercept() HttpRequest {url: "/api/user/login", body: {…}, reportProgress: false, withCredentials: false, responseType: "json", …} HttpXhrBackend {xhrFactory: BrowserXhr}
+user-store.service.ts:17 UserStoreService::get token() null
+zone.js:2969 POST http://localhost:4200/api/user/login 404 (Not Found)
+login.component.ts:33 Error logging in HttpErrorResponse {headers: HttpHeaders, status: 404, statusText: "Not Found", url: "http://localhost:4200/api/user/login", ok: false, …}
+   <= So what's this "/api/user/login" stuff?!?
+   
+  - Updated code <= Github.book examples
+    NEXT ERROR:
+    [Register]    AAA/BBB =>
+core.js:15702 Angular is running in the development mode. Call enableProdMode() to enable the production mode.
+user-store.service.ts:8 UserStoreService::constructor
+user.service.ts:12 UserService::constructor
+register.component.ts:20 RegisterComponent::constructor
+register.component.ts:24 RegisterComponent::register RegisterComponent {userService: UserService, router: Router, username: "AAA", password: "BBB", message: ""}
+user.service.ts:27 UserService::register() AAA BBB
+stock-app.interceptor.ts:12 StockAppInterceptor::constructor
+stock-app.interceptor.ts:16 StockAppInterceptor::intercept() HttpRequest {url: "/api/user/register", body: {…}, reportProgress: false, withCredentials: false, responseType: "json", …} HttpXhrBackend {xhrFactory: BrowserXhr}
+register.component.ts:31 Error registering RangeError: Maximum call stack size exceeded
+    at UserStoreService.get [as token] (user-store.service.ts:16)
+    at UserStoreService.get [as token] (user-store.service.ts:17)
+    at UserStoreService.get [as token] (user-store.service.ts:17)
+...
+    at UserStoreService.get [as token] (user-store.service.ts:17)
+    at UserStoreService.get [as token] (user-store.service.ts:17)
+core.js:14597 ERROR TypeError: Cannot read property 'msg' of undefined
+    at SafeSubscriber._error (register.component.ts:32)
+    at SafeSubscriber.push../node_modules/rxjs/_esm5/internal/Subscriber.js.SafeSubscriber.__tryOrUnsub (Subscriber.js:196)
+    at SafeSubscriber.push../node_modules/rxjs/_esm5/internal/Subscriber.js.SafeSubscriber.error (Subscriber.js:147)
+    at Subscriber.push../node_modules/rxjs/_esm5/internal/Subscriber.js.Subscriber._error (Subscriber.js:80)
+    at Subscriber.push../node_modules/rxjs/_esm5/internal/Subscriber.js.Subscriber.error (Subscriber.js:60)
+    at MapSubscriber.push../node_modules/rxjs/_esm5/internal/Subscriber.js.Subscriber._error (Subscriber.js:80)
+    at MapSubscriber.push../node_modules/rxjs/_esm5/internal/Subscriber.js.Subscriber.error (Subscriber.js:60)
+    at FilterSubscriber.push../node_modules/rxjs/_esm5/internal/Subscriber.js.Subscriber._error (Subscriber.js:80)
+    at FilterSubscriber.push../node_modules/rxjs/_esm5/internal/Subscriber.js.Subscriber.error (Subscriber.js:60)
+    at MergeMapSubscriber.push../node_modules/rxjs/_esm5/internal/operators/mergeMap.js.MergeMapSubscriber._tryNext (mergeMap.js:64)
+  <= Fixed typo in original code...
+     ... and remembered to start with "..\run2.bat" call ng serve --proxy-config proxy.conf.json)
+     <= Better...
+
+5. Test (again):
+   - [Register]  AAA/BBB => 
+     <= HTTP 400 (Bad Request), User already exists, please login.
+        OK: Registration persists as long as the NodeJS server remains running...
+
+   - [Login]  AAA/BBB
+     <= OK: Displays three stocks...
+     - Console:
+login.component.ts:20 LoginComponent::constructor
+login.component.ts:24 LoginComponent::login LoginComponent {userService: UserService, router: Router, username: "AAA", password: "BBB", message: ""}
+user.service.ts:16 UserService::login() AAA BBB
+stock-app.interceptor.ts:16 StockAppInterceptor::intercept() HttpRequest {url: "/api/user/login", body: {…}, reportProgress: false, withCredentials: false, responseType: "json", …} HttpXhrBackend {xhrFactory: BrowserXhr} UserStoreService {_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiQ…TQ2fQ.AyK0fMa2fwSFPaU9YIO61zfHsCgZuiRIVzbQwnFlGWA"}
+user-store.service.ts:17 UserStoreService::get token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiQUFBIiwiaWF0IjoxNTQ2NDgxNTQ2fQ.AyK0fMa2fwSFPaU9YIO61zfHsCgZuiRIVzbQwnFlGWA
+stock-app.interceptor.ts:18 INTERCEPTING, HAS TOKEN
+user-store.service.ts:17 UserStoreService::get token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiQUFBIiwiaWF0IjoxNTQ2NDgxNTQ2fQ.AyK0fMa2fwSFPaU9YIO61zfHsCgZuiRIVzbQwnFlGWA
+stock-app.interceptor.ts:25 Making an authorized request
+user-store.service.ts:12 UserStoreService::set token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiQUFBIiwiaWF0IjoxNTQ2NDgxNzQ0fQ.SqMiu_ehfWxUwjIoPuJllhr-DY9y9yiq9WKsdXwqbpk
+login.component.ts:27 Successfully logged in
+  <= Login completed, screen refresh still TBD...
+stock-list.component.ts:22 StockListComponent::constructor
+stock-list.component.ts:26 StockListComponent::ngOnInit() Page No. :  1
+stock-list.component.ts:29 Page :  1
+stock-app.interceptor.ts:16 StockAppInterceptor::intercept() HttpRequest {url: "/api/stock", body: null, reportProgress: false, withCredentials: false, responseType: "json", …} HttpXhrBackend {xhrFactory: BrowserXhr} UserStoreService {_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiQ…zQ0fQ.SqMiu_ehfWxUwjIoPuJllhr-DY9y9yiq9WKsdXwqbpk"}
+user-store.service.ts:17 UserStoreService::get token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiQUFBIiwiaWF0IjoxNTQ2NDgxNzQ0fQ.SqMiu_ehfWxUwjIoPuJllhr-DY9y9yiq9WKsdXwqbpk
+stock-app.interceptor.ts:18 INTERCEPTING, HAS TOKEN
+user-store.service.ts:17 UserStoreService::get token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiQUFBIiwiaWF0IjoxNTQ2NDgxNzQ0fQ.SqMiu_ehfWxUwjIoPuJllhr-DY9y9yiq9WKsdXwqbpk
+  <= User authorized (behind the scenes; display refresh still TBD...)
+stock-app.interceptor.ts:25 Making an authorized request
+stock-item.component.ts:15 StockItemComponent::constructor
+  <= Stocks successfully displayed
+
+   - [Next Page]
+    <= OK: subscription successfully triggered:
+stock-list.component.ts:35 StockListComponent::nextPage() 1
+stock-list.component.ts:29 Page :  2
+stock-app.interceptor.ts:16 StockAppInterceptor::intercept() HttpRequest {url: "/api/stock", body: null, reportProgress: false, withCredentials: false, responseType: "json", …} HttpXhrBackend {xhrFactory: BrowserXhr} UserStoreService {_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiQ…zQ0fQ.SqMiu_ehfWxUwjIoPuJllhr-DY9y9yiq9WKsdXwqbpk"}
+user-store.service.ts:17 UserStoreService::get token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiQUFBIiwiaWF0IjoxNTQ2NDgxNzQ0fQ.SqMiu_ehfWxUwjIoPuJllhr-DY9y9yiq9WKsdXwqbpk
+stock-app.interceptor.ts:18 INTERCEPTING, HAS TOKEN
+user-store.service.ts:17 UserStoreService::get token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiQUFBIiwiaWF0IjoxNTQ2NDgxNzQ0fQ.SqMiu_ehfWxUwjIoPuJllhr-DY9y9yiq9WKsdXwqbpk
+stock-app.interceptor.ts:25 Making an authorized request
+stock-item.component.ts:15 StockItemComponent::constructor    
+
+  << Saved Git backup >>
+
+
+===================================================================================================
+
 
 
 

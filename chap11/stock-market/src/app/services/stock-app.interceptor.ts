@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpEvent, HttpInterceptor, HttpResponse} from '@angular/common/http';
 import {HttpHandler, HttpRequest, HttpErrorResponse} from '@angular/common/http';
-
 import {Observable} from 'rxjs';
 
 import { UserStoreService } from './user-store.service';
@@ -10,13 +9,13 @@ import { UserStoreService } from './user-store.service';
 export class StockAppInterceptor implements HttpInterceptor {
 
   constructor(private userStore: UserStoreService) {
-    console.log('StockAppInterceptor::constructor()');
+    console.log('StockAppInterceptor::constructor');
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    console.log('StockAppInterceptor::intercept()', req, next);
+    console.log('StockAppInterceptor::intercept()', req, next, this.userStore);
     if (this.userStore.token) {
-      console.log('INTERCEPTING, HAS TOKEN', this.userStore.token);
+      console.log('INTERCEPTING, HAS TOKEN');
       const authReq = req.clone({
         headers: req.headers.set(
           'X-AUTH-HEADER',
@@ -28,4 +27,5 @@ export class StockAppInterceptor implements HttpInterceptor {
     }
     return next.handle(req);
   }
+
 }

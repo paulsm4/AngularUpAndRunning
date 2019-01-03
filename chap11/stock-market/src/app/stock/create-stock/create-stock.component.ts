@@ -13,9 +13,8 @@ export class CreateStockComponent {
   public confirmed = false;
   public message = null;
   public exchanges = ['NYSE', 'NASDAQ', 'OTHER'];
-
   constructor(private stockService: StockService) {
-    console.log('CreateStockComponent::constructor()');
+    console.log('CreateStockComponent::constructor');
     this.initializeStock();
   }
 
@@ -42,11 +41,9 @@ export class CreateStockComponent {
     if (stockForm.valid) {
       this.stockService.createStock(this.stock)
           .subscribe((result: any) => {
-            console.log('CreateStockComponent::createStock@subscription callback', result);
             this.message = result.msg;
             this.initializeStock();
           }, (err) => {
-            console.log('CreateStockComponent::createStock@error callback', err);
             this.message = err.error.msg;
           });
     } else {
