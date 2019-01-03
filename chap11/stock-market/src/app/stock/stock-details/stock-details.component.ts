@@ -11,6 +11,7 @@ import { Stock } from '../../model/stock';
 export class StockDetailsComponent implements OnInit {
 
   public stock: Stock;
+
   constructor(
     private stockService: StockService,
     private route: ActivatedRoute) {
@@ -19,8 +20,17 @@ export class StockDetailsComponent implements OnInit {
 
   ngOnInit() {
     console.log('StockDetailsComponent::ngOnInit()')                ;
-    const stockCode = this.route.snapshot.paramMap.get('code');
-    this.stockService.getStock(stockCode).subscribe(stock => this.stock = stock);
+    // VERSION 1: Before Resolver pre-load
+    // const stockCode = this.route.snapshot.paramMap.get('code');
+    // this.stockService.getStock(stockCode).subscribe(stock => this.stock = stock);
+
+    // VERSION 2: Subscribes to StockDetailsComponent (path '/stock/:code')
+    this.route.data.subscribe((data: {stock: Stock}) => {
+      console.log('StockDetailsComponent::ngOnInit()@subscription available', data);
+      this.stock = data.stock;
+    });
+
+
   }
 
 }

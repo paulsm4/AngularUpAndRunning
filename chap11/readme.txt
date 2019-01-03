@@ -582,8 +582,217 @@ stock-item.component.ts:15 StockItemComponent::constructor
 
   << Saved Git backup >>
 
-
 ===================================================================================================
+* Chap 11: Route guards:
+
+1. Create a route guard:
+   - ng generate guard guards/auth
+CREATE src/app/guards/auth.guard.spec.ts (346 bytes)
+CREATE src/app/guards/auth.guard.ts (414 bytes)
+
+  - Added custom code:
+import { Injectable } from '@angular/core';
+import { CanActivate, Router } from '@angular/router';
+import { UserStoreService } from '../services/user-store.service';
+
+@Injectable()
+export class AuthGuard implements CanActivate {
+
+  constructor(
+    private userStore: UserStoreService,
+    private router: Router) {
+    console.log('AuthGuard::constructor');
+  }
+
+  canActivate (): boolean {
+    console.log('AuthGuard::canActivate');
+    if (this.userStore.isLoggedIn()) {
+       return true;
+    } else {
+      console.error('AuthGuard#canActivate not authorized to access page');
+      this.router.navigate(['login']);
+      return false;
+      }
+  }
+
+  - Added guard to app-routing.modules.ts:
+import { AuthGuard } from './guards/auth.guard';
+...
+const appRoutes: Routes = [
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  ...
+  { path: 'stocks/list', component: StockListComponent, canActivate: [AuthGuard] },
+  { path: 'stocks/create', component: CreateStockComponent, canActivate: [AuthGuard] },
+  { path: 'stock/:code', component: StockDetailsComponent, canActivate: [AuthGuard] },
+  ...
+
+  - Added guard to app.module.ts:
+import { AuthGuard } from './guards/auth.guard';
+...
+@NgModule({
+  declarations: [
+  ...
+  providers: [
+    AuthGuard,
+  ...
+
+2. Test:
+    - http://localhost:4200 > Stock List =>
+AuthGuard::constructor
+auth.guard.ts:15 AuthGuard::canActivate
+user-store.service.ts:22 UserStoreService::isLoggedIn() null
+auth.guard.ts:19 AuthGuard#canActivate not authorized to access page
+  <= Perfect!
+
+3. Previous example: prevent load (e.g. if not logged in)  
+   Next example: prevent UNLOAD <= canDeactivate guard
+
+   - ng generate guard guards/create-stock-deactivate
+CREATE src/app/guards/create-stock-deactivate.guard.spec.ts (450 bytes)
+CREATE src/app/guards/create-stock-deactivate.guard.ts (431 bytes)
+     <= Added custom code:
+     - create-stock-deactivate.guard.ts:
+...
+@Injectable()
+export class CreateStockDeactivateGuard implements CanDeactivate<CreateStockComponent> {
+  ...
+  canDeactivate(
+    component: CreateStockComponent,
+    currentRoute: ActivatedRouteSnapshot,
+    currentState: RouterStateSnapshot,
+    nextState?: RouterStateSnapshot): boolean | Observable<boolean> | Promise<boolean> {
+      console.log('CreateStockDeactivateGuard::canDeactivate');
+      return window.confirm('Do you want to navigate away from this page?');
+    }          
+
+   - Update app-routing.module.ts:
+import { CreateStockDeactivateGuard } from './guards/create-stock-deactivate.guard';
+...
+const appRoutes: Routes = [
+  ...
+  { path: 'stocks/create', component: CreateStockComponent, 
+      canActivate: [AuthGuard],
+      canDeactivate: [CreateStockDeactivateGuard] 
+
+  - Update app.module.ts
+    <= Add CreateStockDeactivateGuard to imports and providers[]
+
+4. Test:
+   - [Register]: AAA/BBB, [Login] AAA/BBB, [Create Stock]
+     <= Trying to navigate away during "Create stock" shows prompt:
+        "Do you want to navigate away from this page (OK/Cancel)
+   - NOTE: 
+       [Register] => Login, [Login] => StockList, ...
+       <= Automatically updates state/updates URL (it was *NOT* doing this earlier...)
+
+5. Preload data using a "Resolver":
+   - ng generate service resolver/stock-load-resolver:
+CREATE src/app/resolver/stock-load-resolver.service.spec.ts (390 bytes)
+CREATE src/app/resolver/stock-load-resolver.service.ts (146 bytes)
+      <= Customize code:
+
+   - Update app-routing.module.ts:
+import { StockLoadResolverService } from './resolver/stock-load-resolver.service';
+  <= Add to providers[]
+
+   - Update app.module.ts
+import { StockLoadResolverService } from './resolver/stock-load-resolver.service';
+  <= Add to path 'stock/:code':
+  const appRoutes: Routes = [
+  ...
+    { path: 'stock/:code', component: StockDetailsComponent,
+      canActivate: [AuthGuard],
+      resolve: { stock: StockLoadResolverService }
+    },
+
+   - Update stock-details.component.ts:
+  ...
+  ngOnInit() {
+    console.log('StockDetailsComponent::ngOnInit()')                ;
+    // VERSION 1: Before Resolver pre-load
+    // const stockCode = this.route.snapshot.paramMap.get('code');
+    // this.stockService.getStock(stockCode).subscribe(stock => this.stock = stock);
+
+    // VERSION 2: Subscribes to StockDetailsComponent (path '/stock/:code')
+    this.route.data.subscribe((data: {stock: Stock}) => {
+      console.log('StockDetailsComponent::ngOnInit()@subscription available', data);
+      this.stock = data.stock;
+    });
+
+6. Test:
+   - Initialization:
+Angular is running in the development mode. Call enableProdMode() to enable the production mode.
+user-store.service.ts:8 UserStoreService::constructor
+auth.guard.ts:11 AuthGuard::constructor
+auth.guard.ts:15 AuthGuard::canActivate
+user-store.service.ts:22 UserStoreService::isLoggedIn() null
+auth.guard.ts:19 AuthGuard#canActivate not authorized to access page
+user.service.ts:12 UserService::constructor
+login.component.ts:20 LoginComponent::constructor
+
+   - [Login] AAA/BBB:
+login.component.ts:24 LoginComponent::login LoginComponent {userService: UserService, router: Router, username: "AAA", password: "BBB", message: ""}
+user.service.ts:16 UserService::login() AAA BBB
+stock-app.interceptor.ts:12 StockAppInterceptor::constructor
+stock-app.interceptor.ts:16 StockAppInterceptor::intercept() HttpRequest {url: "/api/user/login", body: {…}, reportProgress: false, withCredentials: false, responseType: "json", …} HttpXhrBackend {xhrFactory: BrowserXhr} UserStoreService {_token: null}
+user-store.service.ts:17 UserStoreService::get token null
+user-store.service.ts:12 UserStoreService::set token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiQUFBIiwiaWF0IjoxNTQ2NTAwOTc1fQ.gJbr2qM98q9L2Jb85eEPJUXNowD2AAVpVZsqP18xiLQ
+login.component.ts:27 Successfully logged in
+auth.guard.ts:15 AuthGuard::canActivate
+user-store.service.ts:22 UserStoreService::isLoggedIn() eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiQUFBIiwiaWF0IjoxNTQ2NTAwOTc1fQ.gJbr2qM98q9L2Jb85eEPJUXNowD2AAVpVZsqP18xiLQ
+stock.service.ts:14 StockService::constructor
+stock-list.component.ts:22 StockListComponent::constructor
+stock-list.component.ts:26 StockListComponent::ngOnInit() Page No. :  1
+stock-list.component.ts:29 Page :  1
+stock-app.interceptor.ts:16 StockAppInterceptor::intercept() HttpRequest {url: "/api/stock", body: null, reportProgress: false, withCredentials: false, responseType: "json", …} HttpXhrBackend {xhrFactory: BrowserXhr} UserStoreService {_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiQ…Tc1fQ.gJbr2qM98q9L2Jb85eEPJUXNowD2AAVpVZsqP18xiLQ"}
+user-store.service.ts:17 UserStoreService::get token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiQUFBIiwiaWF0IjoxNTQ2NTAwOTc1fQ.gJbr2qM98q9L2Jb85eEPJUXNowD2AAVpVZsqP18xiLQ
+stock-app.interceptor.ts:18 INTERCEPTING, HAS TOKEN
+user-store.service.ts:17 UserStoreService::get token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiQUFBIiwiaWF0IjoxNTQ2NTAwOTc1fQ.gJbr2qM98q9L2Jb85eEPJUXNowD2AAVpVZsqP18xiLQ
+stock-app.interceptor.ts:25 Making an authorized request
+3stock-item.component.ts:15 StockItemComponent::constructor
+  <= Successful login, and read stock list
+     Does *NOT* try to resolve anything yet...
+
+   - <Select> Second Stock Company (SSC):
+AuthGuard::canActivate
+user-store.service.ts:22 UserStoreService::isLoggedIn() eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiQUFBIiwiaWF0IjoxNTQ2NTAwOTc1fQ.gJbr2qM98q9L2Jb85eEPJUXNowD2AAVpVZsqP18xiLQ
+stock-load-resolver.service.ts:11 StockLoadResolverService::constructor
+stock-load-resolver.service.ts:18 StockLoadResolverService::resolve
+  RouterStateSnapshot {_root: TreeNode, url: "/stock/TSC"}
+    root: (...)
+    url: "/stock/TSC"
+    _root: TreeNode {value: ActivatedRouteSnapshot, children: Array(1)}
+    __proto__: Tree
+stock-app.interceptor.ts:16 StockAppInterceptor::intercept()
+  HttpRequest {url: "/api/stock/TSC", body: null, reportProgress: false, withCredentials: false, responseType: "json", …}
+    body: null
+    headers: HttpHeaders {normalizedNames: Map(0), lazyUpdate: null, headers: Map(0)}
+    method: "GET"
+    params: HttpParams {updates: null, cloneFrom: null, encoder: HttpUrlEncodingCodec, map: Map(0)}
+    reportProgress: false
+    responseType: "json"
+    url: "/api/stock/TSC"
+    urlWithParams: "/api/stock/TSC"
+    withCredentials: false
+    __proto__: Object
+  HttpXhrBackend {xhrFactory: BrowserXhr}
+    xhrFactory: BrowserXhr {}
+    __proto__: Object
+  UserStoreService {_token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiQ…Tc1fQ.gJbr2qM98q9L2Jb85eEPJUXNowD2AAVpVZsqP18xiLQ"}
+    token: (...)
+    _token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiQUFBIiwiaWF0IjoxNTQ2NTAwOTc1fQ.gJbr2qM98q9L2Jb85eEPJUXNowD2AAVpVZsqP18xiLQ"
+    __proto__: Object
+user-store.service.ts:17 UserStoreService::get token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiQUFBIiwiaWF0IjoxNTQ2NTAwOTc1fQ.gJbr2qM98q9L2Jb85eEPJUXNowD2AAVpVZsqP18xiLQ
+stock-app.interceptor.ts:18 INTERCEPTING, HAS TOKEN
+user-store.service.ts:17 UserStoreService::get token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiQUFBIiwiaWF0IjoxNTQ2NTAwOTc1fQ.gJbr2qM98q9L2Jb85eEPJUXNowD2AAVpVZsqP18xiLQ
+stock-app.interceptor.ts:25 Making an authorized request
+stock-details.component.ts:18 StockDetailsComponent::constructor
+stock-details.component.ts:22 StockDetailsComponent::ngOnInit()   
+   
+
+
+
+
 
 
 
