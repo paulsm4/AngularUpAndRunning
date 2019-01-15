@@ -25,4 +25,9 @@ Package                      Version
 rxjs                         6.3.3
 typescript                   3.1.6
 
-* Chap2: Hello world
+* Chapter summaries:
+  - See individual chapNNN/readme.txt files
+
+* Bootstrapjs:
+  - Example illustrating using Angular SPA with BootstrapJS UI
+
