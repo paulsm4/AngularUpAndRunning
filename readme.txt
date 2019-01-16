@@ -31,3 +31,10 @@ typescript                   3.1.6
 * Bootstrapjs:
   - Example illustrating using Angular SPA with BootstrapJS UI
 
+* JwtAuth
+  - Illustrates how an Angular client would use a JWT token for authentication.
+  - Technologies: {
+      Guards, Interceptors, ReactiveFormsModule (rxjs/Observables), Bootstrapjs (jumbotron), 
+      TS Barrel files (index.ts), JS "reload document" (location.reload (true)), 
+      JS local storage (localStorage.setItem(), .removeItem()), etc.
+
